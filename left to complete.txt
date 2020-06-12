@@ -1,5 +1,3 @@
-resize
-rotate
-group
-layering (z-index)
-save
+σχήμα για την πόρτα
+json αντικείμενο
+remove flags for buttonsclicked with true in addeventlistener

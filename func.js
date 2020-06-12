@@ -3,6 +3,7 @@ var selectedElement,offset, transform,confined;
 var button2Clicked=false;
 var button4Clicked=false;
 var button5Clicked=false;
+var flag=false;
 var objects=[];
 
 var boundaryX1 = 0;
@@ -23,18 +24,37 @@ const museumPoint = (elem, x, y) => {
 }
 
 //onclick function of the 1st button
-document.getElementById("btn1").addEventListener("click",function(){
-	
-	var myImage = document.createElementNS(svgNS,"image");	//to create a circle. for rectangle use "rectangle"
-	//myImage.setAttributeNS(null,"id","myimage");
+
+function createImage(type){
+	console.log(type);
+	if(flag){
+	var myImage = document.createElementNS(svgNS,"image");
+	if(type=="small"){
     myImage.setAttributeNS(null,"height","10%");
     myImage.setAttributeNS(null,"width","10%");
+    myImage.setAttributeNS(xlink,"href","small.png");
+	}
+	else if(type=="medium"){
+    myImage.setAttributeNS(null,"height","20%");
+    myImage.setAttributeNS(null,"width","20%");
     myImage.setAttributeNS(xlink,"href","sparta.png");
+	}
+	else if(type=="large"){
+    myImage.setAttributeNS(null,"height","30%");
+    myImage.setAttributeNS(null,"width","30%");
+    myImage.setAttributeNS(xlink,"href","europi.jpeg");
+	}
+	else{
+		alert("Something wrong happened");
+	}
 	myImage.setAttribute("class","draggable confine");
 	document.getElementById("museum").appendChild(myImage);
-	
+	}
+	else{
+		alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
+	}
+}
 
-});
 
 //onclick function of the 2nd button
 document.getElementById("btn2").addEventListener("click", createRect);
@@ -42,6 +62,7 @@ document.getElementById("btn2").addEventListener("click", createRect);
 
 	
 	function createRect(){
+		flag=true;
 		button2Clicked=true;
 	//on mousedown start creating the rectangle
 	museum.addEventListener("mousedown",(event) =>{
@@ -89,6 +110,7 @@ document.getElementById("btn2").addEventListener("click", createRect);
 
 //onclick function of the 3rd button
 document.getElementById("btn3").addEventListener("click", function(){
+	flag=true;
 	var myPolyline = document.createElementNS(svgNS,"polyline"); 
     myPolyline.setAttributeNS(null,"points","0,0 0,60 90,60 90,0 0,0");
     myPolyline.setAttributeNS(null,"width",5);
@@ -103,6 +125,7 @@ document.getElementById("btn3").addEventListener("click", function(){
 document.getElementById("btn4").addEventListener("click", createLine);
 
 function createLine(){
+	if(flag){
 		button4Clicked=true;
 	
 	//on mousedown start creating the line
@@ -135,7 +158,10 @@ function createLine(){
 		
 		}
 	});
-
+	}
+	else{
+			alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
+		}
 
 }
 //remove an object of your choice
@@ -198,17 +224,45 @@ function load(){
 
 
 //onclick function of the 8th button
-document.getElementById("btn8").addEventListener("click",function(){
-	
-	var myImage = document.createElementNS(svgNS,"image");
-	myImage.setAttributeNS(null,"height","10%");
-    myImage.setAttributeNS(null,"width","10%");
-    myImage.setAttributeNS(xlink,"href","door.png");
-	myImage.setAttribute("class","draggable confine");
-	document.getElementById("museum").appendChild(myImage);
-	
-
-});
+function createDoor(type){
+	if(flag){
+		
+		museum.addEventListener("click",function _listener(event){
+			
+		
+			var line =document.createElementNS(svgNS,"line");
+			var start= museumPoint(museum,event.clientX,event.clientY);
+			
+			if(type=="horizontal"){
+				line.setAttributeNS(null, 'x1', start.x-10);
+				line.setAttributeNS(null, 'y1', start.y);
+				line.setAttributeNS(null, 'x2', start.x+10);
+				line.setAttributeNS(null, 'y2', start.y);
+				
+			}	
+			else if(type=="vertical"){
+				line.setAttributeNS(null, 'x1', start.x);
+				line.setAttributeNS(null, 'y1', start.y-10);
+				line.setAttributeNS(null, 'x2', start.x);
+				line.setAttributeNS(null, 'y2', start.y+10);
+			}
+			else{
+				alert("ΣΤΑΜΑΤΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑ");
+			}
+			line.setAttributeNS(null,"stroke","red");
+			line.setAttribute("class","draggable confine");
+			document.getElementById("museum").appendChild(line);
+			museum.removeEventListener("click",_listener,true);
+				
+		
+		},true);
+		
+		
+	}
+	else{
+		alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
+	}
+}
 
 //------------------------------------------------
 
