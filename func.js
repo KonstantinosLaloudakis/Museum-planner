@@ -5,6 +5,9 @@ var button4Clicked=false;
 var button5Clicked=false;
 var flag=false;
 var objects=[];
+var jsonString;
+var tempDiv=null;
+var buttonPressed=false;
 
 var boundaryX1 = 0;
 var boundaryX2 = 100;
@@ -63,10 +66,14 @@ document.getElementById("btn2").addEventListener("click", createRect);
 	
 	function createRect(){
 		flag=true;
+		
+		if(!buttonPressed){
+			console.log("1");
+		buttonPressed=true;
 		button2Clicked=true;
 	//on mousedown start creating the rectangle
 	museum.addEventListener("mousedown",(event) =>{
-		if(button2Clicked){
+		if(button2Clicked && !button4Clicked){
 			button2Clicked=false;
 			var rect =document.createElementNS(svgNS,"rect");
 			var start= museumPoint(museum,event.clientX,event.clientY);
@@ -101,10 +108,16 @@ document.getElementById("btn2").addEventListener("click", createRect);
 			}
 			museum.addEventListener('mousemove', drawRect);
 			museum.addEventListener('mouseup', endDrawRect);
-		
+			buttonPressed=false;
 		}
+		
 	});
 	
+	
+	}
+	else{
+		alert("Eisai malakas");
+	}
 	
 }
 
@@ -112,7 +125,7 @@ document.getElementById("btn2").addEventListener("click", createRect);
 document.getElementById("btn3").addEventListener("click", function(){
 	flag=true;
 	var myPolyline = document.createElementNS(svgNS,"polyline"); 
-    myPolyline.setAttributeNS(null,"points","0,0 0,60 90,60 90,0 0,0");
+    myPolyline.setAttributeNS(null,"points","3,3 3,67 97,67 97,3 3,3");
     myPolyline.setAttributeNS(null,"width",5);
     myPolyline.setAttributeNS(null,"height",5);
     myPolyline.setAttributeNS(null,"fill","transparent");
@@ -126,12 +139,15 @@ document.getElementById("btn4").addEventListener("click", createLine);
 
 function createLine(){
 	if(flag){
+		
+		if(!buttonPressed){
+		buttonPressed=true;
+		console.log("2");
 		button4Clicked=true;
-	
 	//on mousedown start creating the line
 	museum.addEventListener("mousedown",(event) =>{
 	
-		if(button4Clicked){
+		if(button4Clicked && !button2Clicked){
 			button4Clicked=false;
 			var line =document.createElementNS(svgNS,"line");
 			var start= museumPoint(museum,event.clientX,event.clientY);
@@ -155,9 +171,14 @@ function createLine(){
 		}
 		museum.addEventListener('mousemove', drawLine);
 		museum.addEventListener('mouseup', endDrawLine);
-		
+		buttonPressed=false;
 		}
+		
 	});
+		}
+		else{
+			alert("Eisai malakas");
+		}
 	}
 	else{
 			alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
@@ -168,10 +189,9 @@ function createLine(){
 document.getElementById("btn5").addEventListener("click",removeObject);
 
 function removeObject(){
-	button5Clicked=true;
-	museum.addEventListener("mousedown",(event) =>{
-		if(button5Clicked){
-			button5Clicked=false;
+	if(!buttonPressed){
+		buttonPressed=true;
+	museum.addEventListener("click",function _listener(event){
 			selectedElement=event.target;
 			if(selectedElement!=document.getElementById("museum")){
 				var object = selectedElement;
@@ -181,8 +201,14 @@ function removeObject(){
 			else{
 				alert("Ρε την παλεύεις; Πας να διαγράψεις κατι που δεν υπάρχει!");
 			}
-		}
-	});
+			museum.removeEventListener("click",_listener,true);
+	
+	buttonPressed=false;	
+	},true);
+	}
+	else{
+		alert("Eisai malakas");
+	}
 }
 
 document.getElementById("btn6").addEventListener("click",save);
@@ -208,7 +234,7 @@ document.getElementById("btn7").addEventListener("click",load);
 
 //load all previous saved objects 
 function load(){
-	if(objects.length){
+	/*if(objects.length){
 		console.log(objects);
 	for(var i in objects)
 		document.getElementById('museum').appendChild(objects[i]);
@@ -218,15 +244,23 @@ function load(){
 	//if the objects array is empty, it means that the save function hasn't been called yet, so we inform the user
 	else{
 		alert("There isn't a saved session");
+	}*/
+	if(tempDiv){
+	svgText=JSON.parse(jsonString);
+	tempDiv.innerHTML = svgText;
+	document.getElementById("museum").appendChild(tempDiv);
 	}
-	
+	else{
+		alert("There isn't a saved session");
+	}
 }
 
 
 //onclick function of the 8th button
 function createDoor(type){
 	if(flag){
-		
+		if(!buttonPressed){
+		buttonPressed=true;
 		museum.addEventListener("click",function _listener(event){
 			
 		
@@ -253,10 +287,14 @@ function createDoor(type){
 			line.setAttribute("class","draggable confine");
 			document.getElementById("museum").appendChild(line);
 			museum.removeEventListener("click",_listener,true);
+			console.log(line);
 				
-		
+		buttonPressed=false;
 		},true);
-		
+		}
+		else{
+			alert("Eisai malakas");
+		}
 		
 	}
 	else{
@@ -264,6 +302,35 @@ function createDoor(type){
 	}
 }
 
+document.getElementById("btn9").addEventListener("click",save_json);
+
+function save_json(){
+	var museum = document.getElementById("museum");
+	tempDiv = document.createElement("div");
+	tempDiv=museum.cloneNode(true);
+	var svgText = tempDiv.innerHTML;
+	jsonString = JSON.stringify(svgText);
+	//download(jsonString,"kati.json","JSON");
+	console.log(jsonString);
+}
+
+function download(data, filename, type) {
+    var file = new Blob([data], {type: type});
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+        var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  
+        }, 0); 
+    }
+}
 //------------------------------------------------
 
 
