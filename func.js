@@ -8,6 +8,7 @@ var objects=[];
 var jsonString;
 var tempDiv=null;
 var buttonPressed=false;
+var box=true;
 
 var boundaryX1 = 0;
 var boundaryX2 = 100;
@@ -123,6 +124,8 @@ document.getElementById("btn2").addEventListener("click", createRect);
 
 //onclick function of the 3rd button
 document.getElementById("btn3").addEventListener("click", function(){
+	if(box){
+		box=false;
 	flag=true;
 	var myPolyline = document.createElementNS(svgNS,"polyline"); 
     myPolyline.setAttributeNS(null,"points","3,3 3,67 97,67 97,3 3,3");
@@ -132,6 +135,10 @@ document.getElementById("btn3").addEventListener("click", function(){
     myPolyline.setAttributeNS(null,"stroke","black");
 	myPolyline.setAttribute("class","draggable confine");
 	museum.appendChild(myPolyline);
+	}
+	else{
+		alert("You can only add one box");
+	}
 });
 
 //onclick function of the 4th button
