@@ -29,6 +29,7 @@ const museumPoint = (elem, x, y) => {
 
 //onclick function of the 1st button
 
+
 function createImage(type){
 	console.log(type);
 	if(flag){
@@ -117,7 +118,7 @@ document.getElementById("btn2").addEventListener("click", createRect);
 	
 	}
 	else{
-		alert("Eisai malakas");
+		alert("You have already pressed a button");
 	}
 	
 }
@@ -184,7 +185,7 @@ function createLine(){
 	});
 		}
 		else{
-			alert("Eisai malakas");
+			alert("You have already pressed a button");
 		}
 	}
 	else{
@@ -214,7 +215,7 @@ function removeObject(){
 	},true);
 	}
 	else{
-		alert("Eisai malakas");
+		alert("You have already pressed a button");
 	}
 }
 
@@ -241,6 +242,7 @@ document.getElementById("btn7").addEventListener("click",load);
 
 //load all previous saved objects 
 function load(){
+	var success = false;
 	/*if(objects.length){
 		console.log(objects);
 	for(var i in objects)
@@ -252,14 +254,30 @@ function load(){
 	else{
 		alert("There isn't a saved session");
 	}*/
-	if(tempDiv){
+	/*if(tempDiv){
 	svgText=JSON.parse(jsonString);
 	tempDiv.innerHTML = svgText;
 	document.getElementById("museum").appendChild(tempDiv);
 	}
 	else{
 		alert("There isn't a saved session");
+	}*/
+	
+	$.getJSON('myJson.json',function(data){
+		success=true;
+	console.log(data);
+	museum.innerHTML=data;
+	
+	});
+	//να δουμε ξανα τον χρόνο, γιατί αν υπάρχουν πολλά αντικείμενα στο museum, μπορεί να αργήσει να εμφανιστεί
+	setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+		alert("Houston, we have a problem");
 	}
+	},1000);
+	
 }
 
 
@@ -268,6 +286,7 @@ function createDoor(type){
 	if(flag){
 		if(!buttonPressed){
 		buttonPressed=true;
+		console.log("portaaaaaaa");
 		museum.addEventListener("click",function _listener(event){
 			
 		
@@ -275,17 +294,17 @@ function createDoor(type){
 			var start= museumPoint(museum,event.clientX,event.clientY);
 			
 			if(type=="horizontal"){
-				line.setAttributeNS(null, 'x1', start.x-10);
+				line.setAttributeNS(null, 'x1', start.x-5);
 				line.setAttributeNS(null, 'y1', start.y);
-				line.setAttributeNS(null, 'x2', start.x+10);
+				line.setAttributeNS(null, 'x2', start.x+5);
 				line.setAttributeNS(null, 'y2', start.y);
 				
 			}	
 			else if(type=="vertical"){
 				line.setAttributeNS(null, 'x1', start.x);
-				line.setAttributeNS(null, 'y1', start.y-10);
+				line.setAttributeNS(null, 'y1', start.y-5);
 				line.setAttributeNS(null, 'x2', start.x);
-				line.setAttributeNS(null, 'y2', start.y+10);
+				line.setAttributeNS(null, 'y2', start.y+5);
 			}
 			else{
 				alert("ΣΤΑΜΑΤΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑ");
@@ -300,7 +319,7 @@ function createDoor(type){
 		},true);
 		}
 		else{
-			alert("Eisai malakas");
+			alert("You have already pressed a button");
 		}
 		
 	}
@@ -317,8 +336,20 @@ function save_json(){
 	tempDiv=museum.cloneNode(true);
 	var svgText = tempDiv.innerHTML;
 	jsonString = JSON.stringify(svgText);
-	//download(jsonString,"kati.json","JSON");
 	console.log(jsonString);
+	/*
+	var encoded =btoa(jsonString);
+	console.log(encoded);
+	*/
+	var xhr = new XMLHttpRequest();
+	
+
+		//console.log("1");
+
+	xhr.open("POST","save_json.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xhr.send("json=" + jsonString);
+	//download(jsonString,"kati.json","JSON");
 }
 
 function download(data, filename, type) {
@@ -349,6 +380,7 @@ function makeDraggable(evt) {
   svg.addEventListener('mouseup', endDrag);
   svg.addEventListener('mouseleave', endDrag);
   function startDrag(evt) {
+	  console.log(button2Clicked+" "+ button4Clicked);
 	  //if there is a button pressed don't drag the object
 	if(!button2Clicked && !button4Clicked){
 		  
