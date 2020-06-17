@@ -4,8 +4,8 @@
 <title>Page Title</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../css/style.css">
 </head>
 <body>
 
@@ -49,8 +49,8 @@
   </div>
    </div>
 
-<script src="func.js"></script>
+<script src="../js/func.js"></script>
 
 </body>
-<script src="jquery.min.js"></script>
+<script src="../js/jquery.min.js"></script>
 </html>

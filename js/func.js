@@ -37,17 +37,17 @@ function createImage(type){
 	if(type=="small"){
     myImage.setAttributeNS(null,"height","10%");
     myImage.setAttributeNS(null,"width","10%");
-    myImage.setAttributeNS(xlink,"href","small.png");
+    myImage.setAttributeNS(xlink,"href","../images/small.png");
 	}
 	else if(type=="medium"){
     myImage.setAttributeNS(null,"height","20%");
     myImage.setAttributeNS(null,"width","20%");
-    myImage.setAttributeNS(xlink,"href","sparta.png");
+    myImage.setAttributeNS(xlink,"href","../images/sparta.png");
 	}
 	else if(type=="large"){
     myImage.setAttributeNS(null,"height","30%");
     myImage.setAttributeNS(null,"width","30%");
-    myImage.setAttributeNS(xlink,"href","europi.jpeg");
+    myImage.setAttributeNS(xlink,"href","../images/europi.jpeg");
 	}
 	else{
 		alert("Something wrong happened");
@@ -263,7 +263,7 @@ function load(){
 		alert("There isn't a saved session");
 	}*/
 	
-	$.getJSON('myJson.json',function(data){
+	$.getJSON('../json/myJson.json',function(data){
 		success=true;
 	console.log(data);
 	museum.innerHTML=data;

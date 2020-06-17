@@ -3,8 +3,8 @@ $login_page = "login.php";
 //$logout_page = "logout.php"; 
 //$logout_redirect1 = "../index.html"; 
 //$logout_redirect2 = "php_files/error.php";
-//$register_redirect1 = "register_complete.php";
-$logout_redirect = "login.php";
+$register_redirect1 = "../index.html";
+$logout_redirect = "../index.html";
 $login_redir= "welcome.php";
 
 
