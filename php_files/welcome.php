@@ -45,7 +45,9 @@ die;
   </head>
   <body>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" > <?php if (isAuthenticated()) { 
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" > 
+  <span data-feather="user"></span>
+  <?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
 					}  ?></a>
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +55,9 @@ die;
   </button>
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="logout.php">Sign out</a>
+      <a class="nav-link" href="logout.php">
+	  <span data-feather="log-out"></span>
+	  Sign out</a>
     </li>
   </ul>
 </nav>
@@ -65,19 +69,19 @@ die;
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="public.php">
-              <span data-feather="home"></span>
-              Δημιουργία Μουσείου<span class="sr-only">(current)</span>
+              <span data-feather="plus-square"></span>
+              Create your own museum<span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <span data-feather="file"></span>
-              Orders
+              <span data-feather="loader"></span>
+              Load museum
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <span data-feather="shopping-cart"></span>
+              <span data-feather="edit-2"></span>
               Products
             </a>
           </li>
@@ -90,7 +94,7 @@ die;
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="bar-chart-2"></span>
-              Reports
+              Statistics
             </a>
           </li>
           <li class="nav-item">

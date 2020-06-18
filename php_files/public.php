@@ -1,3 +1,14 @@
+<?php
+    session_start();
+	include "database.php";
+if (!(isset($_SESSION['name'])))
+{
+header ("location: ../index.html");
+die;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +50,9 @@
 	<li><button class="btn btn-default fully" id="btn8" onclick="$('#exhibit_list').hide();$('#door_list').toggle(200);">ΠΟΡΤΑ</button></li>
 	<li><button class="btn btn-default fully" id="btn5" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΔΙΑΓΡΑΦΗ ΑΝΤΙΚΕΙΜΕΝΟΥ</button></li>
 	<li><button class="btn btn-default fully" id="btn6" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΑΠΟΘΗΚΕΥΣΗ</button></li>
-	<li><button class="btn btn-default fully" id="btn7" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΦΟΡΤΩΣΗ ΣΧΕΔΙΟΥ</button></li>
+	<li><button class="btn btn-default fully" id="btn7" onclick="$('#door_list').hide();$('#exhibit_list').hide(); load('<?php if (isAuthenticated()) { 
+		            echo $_SESSION['name']; 
+					}  ?>')">ΦΟΡΤΩΣΗ ΣΧΕΔΙΟΥ</button></li>
 	<li><button class="btn btn-default fully" id="btn9" onclick="$('#door_list').hide();$('#exhibit_list').hide()">JSON</button></li>
 	
 	</ul>
