@@ -55,11 +55,14 @@ die;
 	</ul>
   </div>
   <div class="main">
-  	<svg id="museum" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="makeDraggable(evt)"> 
+  	<svg id="museum" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
+		            echo $_SESSION['name']; 
+					}  ?>');makeDraggable(evt)"> 
   </div>
    </div>
 
 <script src="../js/func.js"></script>
+
 </body>
 <script src="../js/jquery.min.js"></script>
 </html>

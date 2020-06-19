@@ -74,7 +74,7 @@ die;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="load.php">
               <span data-feather="loader"></span>
               Load museum
             </a>

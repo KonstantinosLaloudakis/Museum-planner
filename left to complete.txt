@@ -1,3 +1,5 @@
 δημιουργία βάσης δεδομένων και αποθήκευσης των φακέλων
 fit svg to div 
-image onclick event bugs
+αποθηκευση json buttons
+feathers στο public.php
+zoom in/ out viewbox

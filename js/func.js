@@ -35,6 +35,7 @@ function createImage(type){
 		museum.addEventListener("click",function _listener(event){
 			var myImage = document.createElementNS(svgNS,"image");
 			var start= museumPoint(museum,event.clientX,event.clientY);
+			console.log(start.x+ " ," + start.y);
 			if(type=="small"){
 				myImage.setAttributeNS(null,"height","10%");
 				myImage.setAttributeNS(null,"width","10%");
@@ -53,8 +54,8 @@ function createImage(type){
 			else{
 				alert("Something wrong happened");
 			}
-			myImage.setAttributeNS(null,"x",start.x);
-			myImage.setAttributeNS(null,"y",start.y);
+			myImage.setAttributeNS(null,"x",start.x-(((parseInt(myImage.getAttributeNS(null,"width"))/100)*100)/2));
+			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*70)/2));
 			myImage.setAttribute("class","draggable confine");
 			document.getElementById("museum").appendChild(myImage);
 			museum.removeEventListener("click",_listener,true);
@@ -269,7 +270,8 @@ function load(name){
 		if (!success)
 		{
 			// Handle error accordingly
-			alert("Houston, we have a problem");
+			alert("There isn't any saved template");
+			window.location.href="../php_files/welcome.php";
 		}
 	},1000);
 	
