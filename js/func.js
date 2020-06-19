@@ -13,7 +13,7 @@ var box=true;
 var boundaryX1 = 0;
 var boundaryX2 = 100;
 var boundaryY1 = 0;
-var boundaryY2 = 70;
+var boundaryY2 = 50;
 
 const museum = document.querySelector("#museum");
 
@@ -55,7 +55,7 @@ function createImage(type){
 				alert("Something wrong happened");
 			}
 			myImage.setAttributeNS(null,"x",start.x-(((parseInt(myImage.getAttributeNS(null,"width"))/100)*100)/2));
-			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*70)/2));
+			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*50)/2));
 			myImage.setAttribute("class","draggable confine");
 			document.getElementById("museum").appendChild(myImage);
 			museum.removeEventListener("click",_listener,true);
@@ -128,12 +128,9 @@ document.getElementById("btn3").addEventListener("click", function(){
 		box=false;
 		flag=true;
 		var myPolyline = document.createElementNS(svgNS,"polyline"); 
-		myPolyline.setAttributeNS(null,"points","3,3 3,67 97,67 97,3 3,3");
-		myPolyline.setAttributeNS(null,"width",5);
-		myPolyline.setAttributeNS(null,"height",5);
+		myPolyline.setAttributeNS(null,"points","3,3 3,47 97,47 97,3 3,3");
 		myPolyline.setAttributeNS(null,"fill","transparent");
 		myPolyline.setAttributeNS(null,"stroke","black");
-		myPolyline.setAttribute("class","draggable confine");
 		museum.appendChild(myPolyline);
 	}
 	else{

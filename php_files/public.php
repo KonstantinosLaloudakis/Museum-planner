@@ -8,58 +8,121 @@ die;
 }
 
 ?>
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<title>Page Title</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="../css/style.css">
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>Create your museum</title>
 
-<div class="header">
-  <h1>My Website</h1>
-  <p>A <b>responsive</b> website created by me.</p>
-</div>
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
 
-<div class="navbar">
-  <a href="#" class="active">Home</a>
-  <a href="#">Link</a>
-  <a href="#">Link</a>
-  <a href="#" class="right">Link</a>
-</div>
-<div class="row">
-  <div class="side">
-  <ul class="list-unstyled">
-	<div id="exhibit_list" class="list-unstyled sub" style="box-shadow:2px 2px 3px #ccc;display:none;background:#fff;border-radius: 0 5px 5px 0; padding:10px;position:absolute;left:200px;width:150px">
-		<button class="btn fully image" id="small" onclick="$('#exhibit_list').hide();createImage(this.id)">Small</button>
-        <button class="btn fully image" id="medium" onclick="$('#exhibit_list').hide();createImage(this.id)">Medium</button>
-		<button class="btn fully image" id="large" onclick="$('#exhibit_list').hide();createImage(this.id)">Large</button>
+    <!-- Bootstrap core CSS -->
+<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+
+    <style>
+
+	.navbar {
+  margin: 0 !important;
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0px;
+  float:left;
+}
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+		
+
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" >
+  <a class="navbar-brand"> <span data-feather="user"></span> <?php if (isAuthenticated()) { 
+		            echo $_SESSION['name']; 
+					}  ?></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="welcome.php"><span data-feather="home"></span> <span class="sr-only">(current)</span></a>
+       
+      <li class="nav-item">
+        <a class="nav-link" href="#"><span data-feather="save"></span></a>
+       
+       
+    </ul>
+   
+  </div>
+</nav>
+
+<main role="main">
+<div class="container-fluid h-100 ">
+  <div class="row justify-content-center h-100 ">
+  <div class="col-sm-2  hidden-md-down">
+	<div class="btn-group-vertical">
+		<div class="btn-group dropright">
+		 <button class="btn btn-light dropdown-toggle" id="btn1" data-toggle="dropdown" >ΕΚΘΕΜΑ
+		 <span class="caret"></span></button>
+		<ul class="dropdown-menu text-center" role="menu">
+		<li> <button class="btn btn-light" id="small" onclick="createImage(this.id)"> Small</button></li>
+        <li> <button class="btn btn-light" id="medium" onclick="createImage(this.id)"> Medium</button></li>
+		<li> <button class="btn btn-light" id="large" onclick="createImage(this.id)"> Large</button></li>
+		</ul>
 	</div>
-    <li><button class="btn btn-default fully" id="btn1" onclick="$('#door_list').hide();$('#exhibit_list').toggle(200);">ΕΚΘΕΜΑ</button></li>
-	<li><button class="btn btn-default fully" id="btn2" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΔΩΜΑΤΙΟ</button></li>
-	<li><button class="btn btn-default fully" id="btn3" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΜΕΓΑΛΟΣ ΤΟΙΧΟΣ</button></li>
-	<li><button class="btn btn-default fully" id="btn4" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΤΟΙΧΟΣ</button></li>
-	<div id="door_list" class="list-unstyled sub" style="box-shadow:2px 2px 3px #ccc;display:none;background:#fff;border-radius: 0 5px 5px 0; padding:10px;position:absolute;left:200px;width:150px">
-		<button class="btn fully door" id="horizontal" onclick="$('#door_list').hide();createDoor(this.id)">Horizontal</button>
-        <button class="btn fully door" id="vertical" onclick="$('#door_list').hide();createDoor(this.id)">Vertical</button>
+     
+	 <button class="btn btn-light" id="btn2"  >ΔΩΜΑΤΙΟ</button> 
+	 <button class="btn btn-light" id="btn3"  >ΜΕΓΑΛΟΣ ΤΟΙΧΟΣ</button> 
+	 <button class="btn btn-light" id="btn4" >ΤΟΙΧΟΣ</button> 
+	 <div class="btn-group dropright">
+		 <button class="btn btn-light dropdown-toggle" id="btn8" data-toggle="dropdown" >ΠΟΡΤΑ
+		 <span class="caret"></span></button>
+		<ul class="dropdown-menu text-center" role="menu">
+		<li> <button class="btn btn-light" id="horizontal" onclick="createDoor(this.id)"> Horizontal</button></li>
+        <li> <button class="btn btn-light" id="vertical" onclick="createDoor(this.id)">Vertical</button></li>
+		</ul>
 	</div>
-	<li><button class="btn btn-default fully" id="btn8" onclick="$('#exhibit_list').hide();$('#door_list').toggle(200);">ΠΟΡΤΑ</button></li>
-	<li><button class="btn btn-default fully" id="btn5" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΔΙΑΓΡΑΦΗ ΑΝΤΙΚΕΙΜΕΝΟΥ</button></li>
-	<li><button class="btn btn-default fully" id="btn6" onclick="$('#door_list').hide();$('#exhibit_list').hide()">ΑΠΟΘΗΚΕΥΣΗ</button></li>
-	<li><button class="btn btn-default fully" id="btn9" onclick="$('#door_list').hide();$('#exhibit_list').hide()">JSON</button></li>
+	 <button class="btn btn-light" id="btn5" ><span data-feather="trash-2"></span>ΔΙΑΓΡΑΦΗ </button> 
+	 <button class="btn btn-light" id="btn6" >ΑΠΟΘΗΚΕΥΣΗ</button> 
+	<button class="btn btn-light" id="btn9" >JSON</button> 
 	
-	</ul>
+	</div>
+</div>
+  <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+  <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="makeDraggable(evt)"> 
   </div>
-  <div class="main">
-  	<svg id="museum" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="makeDraggable(evt)"> 
-  </div>
-   </div>
+</div>
+</div>
 
 <script src="../js/func.js"></script>
-</body>
+</main><!-- /.container -->
 <script src="../js/jquery.min.js"></script>
+      
+ <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+        <script src="../js/dashboard.js"></script>
+		<script src="../assets/dist/js/bootstrap.bundle.js"></script>
+
 </html>

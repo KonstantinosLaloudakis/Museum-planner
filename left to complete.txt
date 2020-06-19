@@ -1,5 +1,3 @@
 δημιουργία βάσης δεδομένων και αποθήκευσης των φακέλων
-fit svg to div 
 αποθηκευση json buttons
-feathers στο public.php
 zoom in/ out viewbox
