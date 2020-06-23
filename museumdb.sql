@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Φιλοξενητής: 127.0.0.1
--- Χρόνος δημιουργίας: 17 Ιουν 2020 στις 18:35:10
+-- Χρόνος δημιουργίας: 23 Ιουν 2020 στις 17:42:59
 -- Έκδοση διακομιστή: 10.4.11-MariaDB
 -- Έκδοση PHP: 7.2.27
 
@@ -46,6 +46,26 @@ INSERT INTO `users` (`user_id`, `name`, `surname`, `email`, `password`, `birthda
 (4, 'Kapoios', 'Kapoiou', 'kati@kati.kati', 'kati', '2020-06-02', 'kati'),
 (5, 'Mikros', 'Thanasakis', 'kapoios@kapoiou.gr', 'kati', '2020-06-20', 'kawasakhs');
 
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `user_rooms`
+--
+
+CREATE TABLE `user_rooms` (
+  `user_rooms_id` int(50) NOT NULL,
+  `name` varchar(40) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Άδειασμα δεδομένων του πίνακα `user_rooms`
+--
+
+INSERT INTO `user_rooms` (`user_rooms_id`, `name`, `user_id`) VALUES
+(1, 'museum', 4),
+(2, 'kati', 4);
+
 --
 -- Ευρετήρια για άχρηστους πίνακες
 --
@@ -57,6 +77,13 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`);
 
 --
+-- Ευρετήρια για πίνακα `user_rooms`
+--
+ALTER TABLE `user_rooms`
+  ADD PRIMARY KEY (`user_rooms_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT για άχρηστους πίνακες
 --
 
@@ -65,6 +92,22 @@ ALTER TABLE `users`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT για πίνακα `user_rooms`
+--
+ALTER TABLE `user_rooms`
+  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Περιορισμοί για άχρηστους πίνακες
+--
+
+--
+-- Περιορισμοί για πίνακα `user_rooms`
+--
+ALTER TABLE `user_rooms`
+  ADD CONSTRAINT `user_rooms_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
