@@ -6,11 +6,36 @@ if (!(isset($_SESSION['name'])))
 header ("location: ../index.html");
 die;
 }
+
 //$decoded = base64_decode($_POST["json"]);
+$username=$_SESSION['name'];
 $decoded = $_POST["json"];
-$file=$_SESSION['name'].".json";
+$name=$_POST["name"];
+$file=$name.".json";
+
+
+$con = mysqli_connect("localhost","root","");
+
+if(! $con)
+{
+    die('Connection Failed'.mysql_error());
+}
+
+mysqli_select_db($con,"museumdb");
+
+$id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
+$id=mysqli_fetch_row($id_query);
+mysqli_query($con,'set character set UTF8');
+	mysqli_query($con,"INSERT INTO user_rooms(name,user_id) VALUES (\"$name\",\"$id[0]\")");
+		mysqli_close($con);	
+
+
+
 $jsonFile = fopen("../json/".$file,"w+");
 fwrite($jsonFile,$decoded);
-fclose($jsonFile);
-echo $decoded;
+echo "1";
+
+
+		fclose($jsonFile);
+echo $name;
 ?>

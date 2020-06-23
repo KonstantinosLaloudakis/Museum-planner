@@ -70,7 +70,7 @@ die;
         <a class="nav-link" href="welcome.php"><span data-feather="home"></span> <span class="sr-only">(current)</span></a>
        
       <li class="nav-item">
-        <a class="nav-link" href="#"><span data-feather="save"></span></a>
+        <a class="nav-link" id="btn11" onclick="save_json()"><span data-feather="save"></span></a>
        
        
     </ul>
@@ -105,15 +105,13 @@ die;
 		</ul>
 	</div>
 	 <button class="btn btn-light" id="btn5" ><span data-feather="trash-2"></span>ΔΙΑΓΡΑΦΗ </button> 
-	 <button class="btn btn-light" id="btn6" >ΑΠΟΘΗΚΕΥΣΗ</button> 
-	<button class="btn btn-light" id="btn9" >JSON</button> 
 	
 	</div>
 </div>
   <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
   <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
-					}  ?>');makeDraggable(evt)"> 
+					}  ?>');load_initializer();makeDraggable(evt)"> 
   </div>
 </div>
 </div>

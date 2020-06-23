@@ -1,5 +1,2 @@
-δημιουργία βάσης δεδομένων και αποθήκευσης των φακέλων
-αποθηκευση json buttons
-zoom in/out viewbox
-onload make buttonpressed true
-file_name id_user
+load files
+files with same name

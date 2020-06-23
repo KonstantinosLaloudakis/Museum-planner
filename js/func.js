@@ -323,6 +323,10 @@ function createDoor(type){
 document.getElementById("btn9").addEventListener("click",save_json);
 
 function save_json(){
+	var name=prompt("Please enter the file name","museum");
+	while(name==""){
+		name=prompt("Please enter the file name mh sou gamiso","museum");
+	}
 	var museum = document.getElementById("museum");
 	tempDiv = document.createElement("div");
 	tempDiv=museum.cloneNode(true);
@@ -337,7 +341,9 @@ function save_json(){
 		
 	xhr.open("POST","save_json.php",true);
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xhr.send("json=" + jsonString);
+	var data=''+ "json=" + jsonString + "&name="+name;
+	xhr.send(data);
+	//xhr.send("name=" + name);
 	//download(jsonString,"kati.json","JSON");
 }
 //not yet used
@@ -357,6 +363,12 @@ function download(data, filename, type) {
             window.URL.revokeObjectURL(url);  
         }, 0); 
     }
+}
+
+function load_initializer(){
+	flag=true;
+	box=false;
+	
 }
 //------------------------------------------------
 

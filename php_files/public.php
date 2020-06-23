@@ -70,7 +70,7 @@ die;
         <a class="nav-link" href="welcome.php"><span data-feather="home"></span> <span class="sr-only">(current)</span></a>
        
       <li class="nav-item">
-        <a class="nav-link" href="#"><span data-feather="save"></span></a>
+        <a class="nav-link" id="btn11" onclick="save_json()"><span data-feather="save"></span></a>
        
        
     </ul>
@@ -105,8 +105,6 @@ die;
 		</ul>
 	</div>
 	 <button class="btn btn-light" id="btn5" ><span data-feather="trash-2"></span>ΔΙΑΓΡΑΦΗ </button> 
-	 <button class="btn btn-light" id="btn6" >ΑΠΟΘΗΚΕΥΣΗ</button> 
-	<button class="btn btn-light" id="btn9" >JSON</button> 
 	
 	</div>
 </div>
