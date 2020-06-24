@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Φιλοξενητής: 127.0.0.1
--- Χρόνος δημιουργίας: 23 Ιουν 2020 στις 17:42:59
+-- Χρόνος δημιουργίας: 24 Ιουν 2020 στις 14:02:12
 -- Έκδοση διακομιστή: 10.4.11-MariaDB
 -- Έκδοση PHP: 7.2.27
 
@@ -44,7 +44,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `name`, `surname`, `email`, `password`, `birthday`, `username`) VALUES
 (4, 'Kapoios', 'Kapoiou', 'kati@kati.kati', 'kati', '2020-06-02', 'kati'),
-(5, 'Mikros', 'Thanasakis', 'kapoios@kapoiou.gr', 'kati', '2020-06-20', 'kawasakhs');
+(5, 'Mikros', 'Thanasakis', 'kapoios@kapoiou.gr', 'kati', '2020-06-20', 'kawasakhs'),
+(6, 'Megalos', 'Thanasakis', 'kati@kati.kati', 'kati', '2020-06-20', 'githubakhs');
 
 -- --------------------------------------------------------
 
@@ -63,8 +64,9 @@ CREATE TABLE `user_rooms` (
 --
 
 INSERT INTO `user_rooms` (`user_rooms_id`, `name`, `user_id`) VALUES
-(1, 'museum', 4),
-(2, 'kati', 4);
+(3, 'museum', 6),
+(4, 'makis', 6),
+(7, 'kyj', 6);
 
 --
 -- Ευρετήρια για άχρηστους πίνακες
@@ -91,13 +93,13 @@ ALTER TABLE `user_rooms`
 -- AUTO_INCREMENT για πίνακα `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT για πίνακα `user_rooms`
 --
 ALTER TABLE `user_rooms`
-  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Περιορισμοί για άχρηστους πίνακες

@@ -26,12 +26,15 @@ mysqli_select_db($con,"museumdb");
 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
 $id=mysqli_fetch_row($id_query);
 mysqli_query($con,'set character set UTF8');
+
+
+
 	mysqli_query($con,"INSERT INTO user_rooms(name,user_id) VALUES (\"$name\",\"$id[0]\")");
 		mysqli_close($con);	
 
 
 
-$jsonFile = fopen("../json/".$file,"w+");
+$jsonFile = fopen("../json/".$username."/".$file,"w+");
 fwrite($jsonFile,$decoded);
 echo "1";
 

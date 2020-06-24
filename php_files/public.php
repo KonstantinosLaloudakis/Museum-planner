@@ -71,7 +71,8 @@ die;
        
       <li class="nav-item">
         <a class="nav-link" id="btn11" onclick="save_json()"><span data-feather="save"></span></a>
-       
+       <li class="nav-item">
+        <a class="nav-link" id="btn5" ><span data-feather="trash-2"></span></a>
        
     </ul>
    
@@ -104,7 +105,6 @@ die;
         <li> <button class="btn btn-light" id="vertical" onclick="createDoor(this.id)">Vertical</button></li>
 		</ul>
 	</div>
-	 <button class="btn btn-light" id="btn5" ><span data-feather="trash-2"></span>ΔΙΑΓΡΑΦΗ </button> 
 	
 	</div>
 </div>

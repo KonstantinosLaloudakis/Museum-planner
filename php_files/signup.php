@@ -26,6 +26,8 @@
 	mysqli_query($con,"INSERT INTO users(name,surname,email,password,birthday,username) VALUES (\"$name\",\"$surname\",\"$email\",\"$password\",\"$birthday\",\"$username\")");
 	echo "ok ola";
 	
+    mkdir('../json/'.$username, 0777, true);
+
 
 	mysqli_close($con);		
 		

@@ -197,6 +197,10 @@ function removeObject(){
 		museum.addEventListener("click",function _listener(event){
 			selectedElement=event.target;
 			if(selectedElement!=document.getElementById("museum")){
+				if(selectedElement.tagName.toLowerCase()=="polyline"){
+						box=true;
+						flag=false;
+				}
 				var object = selectedElement;
 				var parent = object.parentNode;
 				parent.removeChild(object);
@@ -214,7 +218,7 @@ function removeObject(){
 	}
 }
 
-document.getElementById("btn6").addEventListener("click",save);
+//document.getElementById("btn6").addEventListener("click",save);
 
 //save all the current objects
 function save(){
@@ -236,7 +240,7 @@ function save(){
 //document.getElementById("btn7").addEventListener("click",load);
 
 //load all previous saved objects from user's json file
-function load(name){
+function load(name,filename){
 	var success = false;
 	/*if(objects.length){
 		for(var i in objects)
@@ -257,7 +261,7 @@ function load(name){
 		alert("There isn't a saved session");
 	}*/
 	//search for file with name same as the username
-	$.getJSON("../json/"+name+".json",function(data){
+	$.getJSON("../json/"+name+"/"+ filename+".json",function(data){
 		success=true;
 		museum.innerHTML=data;
 	
@@ -322,10 +326,22 @@ function createDoor(type){
 //save all the elements inside the viewbox in a json file
 document.getElementById("btn9").addEventListener("click",save_json);
 
-function save_json(){
-	var name=prompt("Please enter the file name","museum");
-	while(name==""){
-		name=prompt("Please enter the file name mh sou gamiso","museum");
+function save_json(museum_name=null){
+	if(!museum_name){
+		var name=prompt("Please enter the file name","museum");
+		while(name==""){
+			name=prompt("Please enter the file name mh sou gamiso","museum");
+		}
+	}
+	else{
+		var name=prompt("Please enter the file name",museum_name);
+		while(name==""){
+			name=prompt("Please enter the file name mh sou gamiso",museum_name);
+		}
+		
+	}
+	if(name==null){
+		return;
 	}
 	var museum = document.getElementById("museum");
 	tempDiv = document.createElement("div");

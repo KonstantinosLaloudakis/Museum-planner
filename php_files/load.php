@@ -6,6 +6,7 @@ if (!(isset($_SESSION['name'])))
 header ("location: ../index.html");
 die;
 }
+$name=$_GET['name'];
 
 ?>
 <!doctype html>
@@ -70,7 +71,9 @@ die;
         <a class="nav-link" href="welcome.php"><span data-feather="home"></span> <span class="sr-only">(current)</span></a>
        
       <li class="nav-item">
-        <a class="nav-link" id="btn11" onclick="save_json()"><span data-feather="save"></span></a>
+        <a class="nav-link" id="btn11" onclick="save_json('<?php echo($name) ?>')"><span data-feather="save"></span></a>
+      <li class="nav-item">
+        <a class="nav-link" id="btn5" ><span data-feather="trash-2"></span></a>
        
        
     </ul>
@@ -104,14 +107,17 @@ die;
         <li> <button class="btn btn-light" id="vertical" onclick="createDoor(this.id)">Vertical</button></li>
 		</ul>
 	</div>
-	 <button class="btn btn-light" id="btn5" ><span data-feather="trash-2"></span>ΔΙΑΓΡΑΦΗ </button> 
 	
 	</div>
 </div>
   <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
   <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
-					}  ?>');load_initializer();makeDraggable(evt)"> 
+					}  ?>','<?php echo($name)?>');load_initializer();makeDraggable(evt)"> 
+					
+					
+					
+					
   </div>
 </div>
 </div>
