@@ -131,21 +131,27 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
     <table class="table table-striped">
      <thead>
       <tr>
-        <td>Name</td>
-        <td>Link</td>
+
        <?php
-	   while($row = mysqli_fetch_array($result))
-		{
-		echo "<tr>";
-		echo "<td>" . $row['name'] . "</td>";
-		echo "<td>" . '<a href="load.php?name='.$row['name'].'"> Link </a>' . "</td>";
-		echo "</tr>";
-		}
-		
+	   if(mysqli_num_rows($result)==0){
+		   echo "<tr>";
+		   echo "<h1> Oh myyyy!! It seems that you haven't created any museum yet. Hit that 'Create your own museum' button and start creating one. You can do it! Believe in yourself!</h1>";
+		   echo "</tr>";
+	   }
+	   else{
+		   while($row = mysqli_fetch_array($result))
+			{
+			echo "<td>Name</td>";
+			echo "<td>Link</td>";
+			echo "<tr>";
+			echo "<td>" . $row['name'] . "</td>";
+			echo "<td>" . '<a href="load.php?name='.$row['name'].'"> Link </a>' . "</td>";
+			echo "</tr>";
+			}
+	   }
 		mysqli_close($con);
 	   ?>
-        .
-
+	   
       </tr>
      </table>
     </table>
