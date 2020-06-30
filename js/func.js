@@ -9,6 +9,7 @@ var jsonString;
 var tempDiv=null;
 var buttonPressed=false;
 var box=true;
+var numImages=0;
 
 var boundaryX1 = 0;
 var boundaryX2 = 100;
@@ -54,9 +55,12 @@ function createImage(type){
 			else{
 				alert("Something wrong happened");
 			}
+			numImages++;
+			myImage.setAttributeNS(null,"id","img"+numImages);
 			myImage.setAttributeNS(null,"x",start.x-(((parseInt(myImage.getAttributeNS(null,"width"))/100)*100)/2));
 			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*50)/2));
 			myImage.setAttribute("class","draggable confine");
+			console.log(myImage);
 			document.getElementById("museum").appendChild(myImage);
 			museum.removeEventListener("click",_listener,true);
 		},true);
@@ -264,6 +268,7 @@ function load(name,filename){
 	$.getJSON("../json/"+name+"/"+ filename+".json",function(data){
 		success=true;
 		museum.innerHTML=data;
+		FindTotalImages();
 	
 	});
 	//να δουμε ξανα τον χρόνο, γιατί αν υπάρχουν πολλά αντικείμενα στο museum, μπορεί να αργήσει να εμφανιστεί
@@ -277,41 +282,76 @@ function load(name,filename){
 	},1000);
 	
 }
+function FindTotalImages(){
+	let images=[];
+	images=museum.getElementsByTagNameNS(svgNS,"image");
+	numImages=images.length;
+}
 
 
 //onclick function of the 8th button(door)
 function createDoor(type){
 	if(flag){
 		if(!buttonPressed){
+			let aa=true;
 			buttonPressed=true;
 			museum.addEventListener("click",function _listener(event){
 			
-		
-				var line =document.createElementNS(svgNS,"line");
+		var line =document.createElementNS(svgNS,"line");
 				var start= museumPoint(museum,event.clientX,event.clientY);
-			
+				
+				
+					console.log("1");
+					console.log(start.x,start.y);
+					if(checkCoords(start.x,start.y)){
+						
+					console.log("2");
 				if(type=="horizontal"){
+					if(checkCoords(start.x-5,start.y) &&  checkCoords(start.x-5,start.y)){
 					line.setAttributeNS(null, 'x1', start.x-5);
 					line.setAttributeNS(null, 'y1', start.y);
 					line.setAttributeNS(null, 'x2', start.x+5);
 					line.setAttributeNS(null, 'y2', start.y);
-					
+					aa=false;
+					}
+					else{
+						alert("Only vertical doors here");
+						
+					}
 				}	
 				else if(type=="vertical"){
+					if(checkCoords(start.x,start.y-5) &&  checkCoords(start.x,start.y-5)){
 					line.setAttributeNS(null, 'x1', start.x);
 					line.setAttributeNS(null, 'y1', start.y-5);
 					line.setAttributeNS(null, 'x2', start.x);
 					line.setAttributeNS(null, 'y2', start.y+5);
+					aa=false;
+					}
+					else{
+						alert("Only horizontal doors here");
+					}
 				}
 				else{
 					alert("ΣΤΑΜΑΤΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑ");
 				}
+				if(!aa){
 				line.setAttributeNS(null,"stroke","red");
 				line.setAttribute("class","draggable confine");
 				document.getElementById("museum").appendChild(line);
 				museum.removeEventListener("click",_listener,true);
 					
+				
 				buttonPressed=false;
+				}
+				}
+				
+				else{
+					console.log(checkCoords(start.x,start.y));
+					console.log("3");
+					alert("Kopsou paidaki");
+				}
+					
+				
 			},true);
 		}
 		else{
@@ -323,8 +363,25 @@ function createDoor(type){
 		alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
 	}
 }
+
+function checkCoords(x,y){
+	var returnVal=false;
+	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
+	var rects=museum.getElementsByTagNameNS(svgNS,"rect");
+	let point = museum.createSVGPoint();
+	point.x=x;
+	point.y=y;
+	console.log(rects);
+	for(i=0;i<rects.length;i++){
+		returnVal=returnVal || rects[i].isPointInStroke(point);
+	}
+	//console.log(element);
+	returnVal=returnVal || element[0].isPointInStroke(point);
+	return returnVal;
+	
+}
 //save all the elements inside the viewbox in a json file
-document.getElementById("btn9").addEventListener("click",save_json);
+//document.getElementById("btn9").addEventListener("click",save_json);
 
 function save_json(museum_name=null){
 	if(!museum_name){
