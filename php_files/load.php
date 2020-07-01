@@ -68,12 +68,12 @@ $name=$_GET['name'];
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="welcome.php"><span data-feather="home"></span> <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="welcome.php" data-toggle="tooltip"  title="Home"><span data-feather="home"></span> <span class="sr-only">(current)</span></a>
        
       <li class="nav-item">
-        <a class="nav-link" id="btn11" onclick="save_json('<?php echo($name) ?>')"><span data-feather="save"></span></a>
+        <a class="nav-link" id="btn11" onclick="save_json('<?php echo($name) ?>',true)" data-toggle="tooltip"  title="Save museum"><span data-feather="save"></span></a>
       <li class="nav-item">
-        <a class="nav-link" id="btn5" ><span data-feather="trash-2"></span></a>
+        <a class="nav-link" id="btn5" data-toggle="tooltip"  title="Remove Object"><span data-feather="trash-2"></span></a>
        
        
     </ul>

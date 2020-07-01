@@ -9,10 +9,7 @@ die;
 
 //$decoded = base64_decode($_POST["json"]);
 $username=$_SESSION['name'];
-$decoded = $_POST["json"];
-$name=$_POST["name"];
-$file=$name.".json";
-$loaded=$_POST["loaded"];
+$name = $_POST["name"];
 
 
 $con = mysqli_connect("localhost","root","");
@@ -24,21 +21,27 @@ if(! $con)
 
 mysqli_select_db($con,"museumdb");
 
-if(!$loaded){
 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
 $id=mysqli_fetch_row($id_query);
 mysqli_query($con,'set character set UTF8');
-mysqli_query($con,"INSERT INTO user_rooms(name,user_id) VALUES (\"$name\",\"$id[0]\")");
-}
+
+
+
+	$name_query=mysqli_query($con,"SELECT * FROM user_rooms WHERE user_id= \"$id[0]\" AND name= \"$name\"");
+	if(mysqli_num_rows($name_query)>0){
+		echo "True";
+		exit();
+		
+	}
+	else{
+		echo "False";
+		exit();
+	}
 	
+		mysqli_close($con);	
 
 
-mysqli_close($con);	
-$jsonFile = fopen("../json/".$username."/".$file,"w+");
-fwrite($jsonFile,$decoded);
-echo "1";
 
 
-		fclose($jsonFile);
-echo $name;
+
 ?>

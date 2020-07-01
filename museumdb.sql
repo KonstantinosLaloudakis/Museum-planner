@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Φιλοξενητής: 127.0.0.1
--- Χρόνος δημιουργίας: 24 Ιουν 2020 στις 14:02:12
+-- Χρόνος δημιουργίας: 01 Ιουλ 2020 στις 17:33:36
 -- Έκδοση διακομιστή: 10.4.11-MariaDB
 -- Έκδοση PHP: 7.2.27
 
@@ -66,7 +66,8 @@ CREATE TABLE `user_rooms` (
 INSERT INTO `user_rooms` (`user_rooms_id`, `name`, `user_id`) VALUES
 (3, 'museum', 6),
 (4, 'makis', 6),
-(7, 'kyj', 6);
+(7, 'kyj', 6),
+(11, 'test', 4);
 
 --
 -- Ευρετήρια για άχρηστους πίνακες
@@ -99,7 +100,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT για πίνακα `user_rooms`
 --
 ALTER TABLE `user_rooms`
-  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Περιορισμοί για άχρηστους πίνακες

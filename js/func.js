@@ -383,7 +383,8 @@ function checkCoords(x,y){
 //save all the elements inside the viewbox in a json file
 //document.getElementById("btn9").addEventListener("click",save_json);
 
-function save_json(museum_name=null){
+function save_json(museum_name=null,loaded=false){
+	
 	if(!museum_name){
 		var name=prompt("Please enter the file name","museum");
 		while(name==""){
@@ -400,6 +401,25 @@ function save_json(museum_name=null){
 	if(name==null){
 		return;
 	}
+	if(!loaded){
+  event.preventDefault(event);
+  $.ajax({
+      url: '../php_files/test.php',
+      type: 'POST',
+      data:{
+		  'name':name,
+	  },
+      success: function (response) {
+		  console.log(name);
+		  console.log(response);
+      //get response from your php page (what you echo or print)
+        if(response =='True'){
+			alert(name +" already exists");
+			return;
+		}
+      }
+    });
+	}
 	var museum = document.getElementById("museum");
 	tempDiv = document.createElement("div");
 	tempDiv=museum.cloneNode(true);
@@ -408,16 +428,20 @@ function save_json(museum_name=null){
 	/*
 	var encoded =btoa(jsonString);
 	*/
+	console.log(loaded);
 	var xhr = new XMLHttpRequest();
 	
 
 		
 	xhr.open("POST","save_json.php",true);
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	var data=''+ "json=" + jsonString + "&name="+name;
+	var data=''+ "json=" + jsonString + "&name="+name +"&loaded=" + loaded;
 	xhr.send(data);
+	alert(name + " saved successfully!!")
 	//xhr.send("name=" + name);
 	//download(jsonString,"kati.json","JSON");
+	
+	
 }
 //not yet used
 function download(data, filename, type) {
