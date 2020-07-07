@@ -105,11 +105,13 @@ die;
         <li> <button class="btn btn-light" id="vertical" onclick="createDoor(this.id)">Vertical</button></li>
 		</ul>
 	</div>
+	<button class="btn btn-light" id="btn123" >Animation</button> 
 	
 	</div>
 </div>
   <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
-  <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="makeDraggable(evt)"> 
+  <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="makeDraggable(evt)">
+	</svg>  
   </div>
 </div>
 </div>
@@ -118,7 +120,7 @@ die;
 </main><!-- /.container -->
 
       <script src="../js/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
         
 		<script src="../assets/dist/js/bootstrap.bundle.js"></script>
 		<script src="../js/dashboard.js"></script>

@@ -1,4 +1,3 @@
-
 var selectedElement,offset, transform,confined;
 var button2Clicked=false;
 var button4Clicked=false;
@@ -10,12 +9,14 @@ var tempDiv=null;
 var buttonPressed=false;
 var box=true;
 var numImages=0;
-
+var doorcoords;
+var array=window.localStorage.getItem("array");
+array=array.split(',');
 var boundaryX1 = 0;
 var boundaryX2 = 100;
 var boundaryY1 = 0;
 var boundaryY2 = 50;
-
+var peopleNum=window.localStorage.getItem("peopleNum");
 const museum = document.querySelector("#museum");
 
 var svgNS = "http://www.w3.org/2000/svg"; 
@@ -244,7 +245,7 @@ function save(){
 //document.getElementById("btn7").addEventListener("click",load);
 
 //load all previous saved objects from user's json file
-function load(name,filename){
+function load(name,filename,array=null){
 	var success = false;
 	/*if(objects.length){
 		for(var i in objects)
@@ -375,7 +376,6 @@ function checkCoords(x,y){
 	for(i=0;i<rects.length;i++){
 		returnVal=returnVal || rects[i].isPointInStroke(point);
 	}
-	//console.log(element);
 	returnVal=returnVal || element[0].isPointInStroke(point);
 	return returnVal;
 	
@@ -467,6 +467,102 @@ function load_initializer(){
 	box=false;
 	
 }
+
+//document.getElementById("btn123").addEventListener("click", function(){
+	function kati(){
+	var point=museum.createSVGPoint();
+	var path;
+	point=findDoor();
+	var myImage=[];
+	console.log(array);
+	console.log(peopleNum);
+	for(i=0;i<peopleNum;i++){
+			myImage[i] = document.createElementNS(svgNS,"image");
+			myImage[i].setAttributeNS(null,"height","10%");
+			myImage[i].setAttributeNS(null,"width","10%");
+			myImage[i].setAttributeNS(null,"x",point.x-(((parseInt(myImage[i].getAttributeNS(null,"width"))/100)*100)/2));
+			myImage[i].setAttributeNS(null,"y",point.y-(((parseInt(myImage[i].getAttributeNS(null,"height"))/100)*50)/2));
+			myImage[i].setAttributeNS(xlink,"href","../images/person.png");
+			myImage[i].setAttribute("class","confine");
+		
+			console.log(myImage[i]);
+			//path="M "+parseFloat(myImage[i].getAttributeNS(null,"x")) + "," + parseFloat(myImage[i].getAttributeNS(null,"y"));
+			path="M 0,0";
+			path+=createPath(parseFloat(myImage[i].getAttributeNS(null,"x")),parseFloat(myImage[i].getAttributeNS(null,"y")));
+			path+=" z";//+point.x +","+point.y;
+			var mpath=document.createElementNS(svgNS,"path");
+			//mpath.setAttributeNS(null,"stroke","blue");
+			mpath.setAttributeNS(null,"d",path);
+			mpath.setAttributeNS(null,"fill","none");
+			mpath.setAttributeNS(null,"id","theMotionPath");
+			
+			var ani = document.createElementNS(svgNS,"animateMotion");
+			ani.setAttributeNS(null,"dur", "30s");
+			ani.setAttributeNS(null,"repeatCount", "1");
+			ani.setAttributeNS(null,"begin",i+'s');
+			
+			var mpathObj=document.createElementNS(svgNS,"mpath");
+			mpathObj.setAttribute("href","#theMotionPath");
+			ani.appendChild(mpathObj)
+			myImage[i].appendChild(ani);
+			console.log(myImage[i]);
+			document.getElementById("museum").appendChild(myImage[i]);
+			//console.log(mpath);
+			document.getElementById("museum").appendChild(mpath);
+			
+	}
+	
+}
+function createPath(x,y){
+	var point=museum.createSVGPoint();
+	var path=" ";
+	var img=museum.getElementsByTagNameNS(svgNS,"image");
+	console.log(img);
+		for(var i in array){
+			if(array[i]==","){
+				continue;
+			}
+			
+			point.x=parseFloat(img[array[i]-1].getAttributeNS(null,"x"));
+			point.x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
+			point.x-=x;
+			point.y=parseFloat(img[array[i]-1].getAttributeNS(null,"y"));
+			point.y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
+			point.y-=y;
+			path+=point.x +',' + point.y +" ";
+		
+	}
+	return path;
+}
+
+function findDoor(){
+	var point = museum.createSVGPoint();
+	
+	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
+	var doors=museum.getElementsByTagNameNS(svgNS,"line");
+	console.log(doors[0]);
+	console.log(parseFloat(doors[0].getAttributeNS(null,"y1")));
+	for(i=0;i<doors.length;i++){
+		point.x=parseFloat(doors[i].getAttributeNS(null,"x1"));
+		point.y=parseFloat(doors[i].getAttributeNS(null,"y1"));
+		point.x2=parseFloat(doors[i].getAttributeNS(null,"x2"));
+		point.y2=parseFloat(doors[i].getAttributeNS(null,"y2"));
+		if(element[0].isPointInStroke(point)){
+			console.log(point);
+			if(point.y===point.y2){
+				point.x+=5;
+			}
+			else if(point.x===point.x2){
+				point.y+=5;
+			}
+			console.log(point);
+			return point; 
+		}
+	}
+	
+}
+
+
 //------------------------------------------------
 
 
