@@ -6,7 +6,6 @@ if (!(isset($_SESSION['name'])))
 header ("location: ../index.html");
 die;
 }
-$name=$_GET['name'];
 
 ?>
 <!doctype html>
@@ -73,6 +72,16 @@ $name=$_GET['name'];
 
 <main role="main">
 <div class="container-fluid h-100 ">
+	<form>
+		<label for="numb"> Path: </label>
+		<input id="numb">
+		<label for="quantity">Quantity (between 1 and 100):</label>
+		<input  type="number" id="quantity" name="quantity" min="1" max="100">
+		<button type="button" onclick='storeData()'>Submit</button>
+	
+	
+	
+	</form>
   <div class="row justify-content-center h-100 ">
   <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
   

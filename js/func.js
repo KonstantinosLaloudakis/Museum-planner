@@ -10,13 +10,12 @@ var buttonPressed=false;
 var box=true;
 var numImages=0;
 var doorcoords;
-var array=window.localStorage.getItem("array");
-array=array.split(',');
+var previous_peopleNum=0;
+var num=0;//pithani allagi onomatos
 var boundaryX1 = 0;
 var boundaryX2 = 100;
 var boundaryY1 = 0;
 var boundaryY2 = 50;
-var peopleNum=window.localStorage.getItem("peopleNum");
 const museum = document.querySelector("#museum");
 
 var svgNS = "http://www.w3.org/2000/svg"; 
@@ -37,7 +36,6 @@ function createImage(type){
 		museum.addEventListener("click",function _listener(event){
 			var myImage = document.createElementNS(svgNS,"image");
 			var start= museumPoint(museum,event.clientX,event.clientY);
-			console.log(start.x+ " ," + start.y);
 			if(type=="small"){
 				myImage.setAttributeNS(null,"height","10%");
 				myImage.setAttributeNS(null,"width","10%");
@@ -61,7 +59,6 @@ function createImage(type){
 			myImage.setAttributeNS(null,"x",start.x-(((parseInt(myImage.getAttributeNS(null,"width"))/100)*100)/2));
 			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*50)/2));
 			myImage.setAttribute("class","draggable confine");
-			console.log(myImage);
 			document.getElementById("museum").appendChild(myImage);
 			museum.removeEventListener("click",_listener,true);
 		},true);
@@ -223,7 +220,6 @@ function removeObject(){
 	}
 }
 
-//document.getElementById("btn6").addEventListener("click",save);
 
 //save all the current objects
 function save(){
@@ -242,37 +238,19 @@ function save(){
 	}
 }
 
-//document.getElementById("btn7").addEventListener("click",load);
+
 
 //load all previous saved objects from user's json file
 function load(name,filename,array=null){
 	var success = false;
-	/*if(objects.length){
-		for(var i in objects)
-		document.getElementById('museum').appendChild(objects[i]);
 	
-	}
-	
-	//if the objects array is empty, it means that the save function hasn't been called yet, so we inform the user
-	else{
-		alert("There isn't a saved session");
-	}*/
-	/*if(tempDiv){
-	svgText=JSON.parse(jsonString);
-	tempDiv.innerHTML = svgText;
-	document.getElementById("museum").appendChild(tempDiv);
-	}
-	else{
-		alert("There isn't a saved session");
-	}*/
-	//search for file with name same as the username
 	$.getJSON("../json/"+name+"/"+ filename+".json",function(data){
 		success=true;
 		museum.innerHTML=data;
 		FindTotalImages();
 	
 	});
-	//να δουμε ξανα τον χρόνο, γιατί αν υπάρχουν πολλά αντικείμενα στο museum, μπορεί να αργήσει να εμφανιστεί
+	
 	setTimeout(function() {
 		if (!success)
 		{
@@ -381,8 +359,6 @@ function checkCoords(x,y){
 	
 }
 //save all the elements inside the viewbox in a json file
-//document.getElementById("btn9").addEventListener("click",save_json);
-
 function save_json(museum_name=null,loaded=false){
 	
 	if(!museum_name){
@@ -425,9 +401,6 @@ function save_json(museum_name=null,loaded=false){
 	tempDiv=museum.cloneNode(true);
 	var svgText = tempDiv.innerHTML;
 	jsonString = JSON.stringify(svgText);
-	/*
-	var encoded =btoa(jsonString);
-	*/
 	console.log(loaded);
 	var xhr = new XMLHttpRequest();
 	
@@ -438,11 +411,11 @@ function save_json(museum_name=null,loaded=false){
 	var data=''+ "json=" + jsonString + "&name="+name +"&loaded=" + loaded;
 	xhr.send(data);
 	alert(name + " saved successfully!!")
-	//xhr.send("name=" + name);
-	//download(jsonString,"kati.json","JSON");
+	
 	
 	
 }
+
 //not yet used
 function download(data, filename, type) {
     var file = new Blob([data], {type: type});
@@ -468,14 +441,17 @@ function load_initializer(){
 	
 }
 
-//document.getElementById("btn123").addEventListener("click", function(){
-	function kati(){
+
+	function kati(array,peopleNum){
 	var point=museum.createSVGPoint();
 	var path;
 	point=findDoor();
 	var myImage=[];
-	console.log(array);
-	console.log(peopleNum);
+	console.log(previous_peopleNum);
+	removePeople();
+	let svg = document.getElementById("museum");
+	if(svg.getCurrentTime() > 0)
+  svg.setCurrentTime(0);
 	for(i=0;i<peopleNum;i++){
 			myImage[i] = document.createElementNS(svgNS,"image");
 			myImage[i].setAttributeNS(null,"height","10%");
@@ -485,16 +461,14 @@ function load_initializer(){
 			myImage[i].setAttributeNS(xlink,"href","../images/person.png");
 			myImage[i].setAttribute("class","confine");
 		
-			console.log(myImage[i]);
-			//path="M "+parseFloat(myImage[i].getAttributeNS(null,"x")) + "," + parseFloat(myImage[i].getAttributeNS(null,"y"));
+			
 			path="M 0,0";
-			path+=createPath(parseFloat(myImage[i].getAttributeNS(null,"x")),parseFloat(myImage[i].getAttributeNS(null,"y")));
+			path+=createPath(parseFloat(myImage[i].getAttributeNS(null,"x")),parseFloat(myImage[i].getAttributeNS(null,"y")),array);
 			path+=" z";//+point.x +","+point.y;
 			var mpath=document.createElementNS(svgNS,"path");
-			//mpath.setAttributeNS(null,"stroke","blue");
 			mpath.setAttributeNS(null,"d",path);
 			mpath.setAttributeNS(null,"fill","none");
-			mpath.setAttributeNS(null,"id","theMotionPath");
+			mpath.setAttributeNS(null,"id","theMotionPath"+num);
 			
 			var ani = document.createElementNS(svgNS,"animateMotion");
 			ani.setAttributeNS(null,"dur", "30s");
@@ -502,26 +476,37 @@ function load_initializer(){
 			ani.setAttributeNS(null,"begin",i+'s');
 			
 			var mpathObj=document.createElementNS(svgNS,"mpath");
-			mpathObj.setAttribute("href","#theMotionPath");
+			mpathObj.setAttribute("href","#theMotionPath"+num);
 			ani.appendChild(mpathObj)
 			myImage[i].appendChild(ani);
-			console.log(myImage[i]);
 			document.getElementById("museum").appendChild(myImage[i]);
-			//console.log(mpath);
 			document.getElementById("museum").appendChild(mpath);
-			
+			console.log(mpath);
 	}
+	previous_peopleNum=peopleNum;
+	num++;
+	
 	
 }
-function createPath(x,y){
+function removePeople(){
+	var objects=museum.getElementsByTagNameNS(svgNS,"image");
+	console.log(objects);
+	for(i=0;i<previous_peopleNum;i++){
+		console.log(i);
+		var person=objects[numImages];
+		var parent=person.parentNode;
+		parent.removeChild(person);
+	}
+	console.log(parent);
+}
+function createPath(x,y,array){
 	var point=museum.createSVGPoint();
 	var path=" ";
 	var img=museum.getElementsByTagNameNS(svgNS,"image");
-	console.log(img);
 		for(var i in array){
-			if(array[i]==","){
+			if(array[i]==",")
 				continue;
-			}
+			
 			
 			point.x=parseFloat(img[array[i]-1].getAttributeNS(null,"x"));
 			point.x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
@@ -540,27 +525,69 @@ function findDoor(){
 	
 	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
 	var doors=museum.getElementsByTagNameNS(svgNS,"line");
-	console.log(doors[0]);
-	console.log(parseFloat(doors[0].getAttributeNS(null,"y1")));
 	for(i=0;i<doors.length;i++){
 		point.x=parseFloat(doors[i].getAttributeNS(null,"x1"));
 		point.y=parseFloat(doors[i].getAttributeNS(null,"y1"));
 		point.x2=parseFloat(doors[i].getAttributeNS(null,"x2"));
 		point.y2=parseFloat(doors[i].getAttributeNS(null,"y2"));
 		if(element[0].isPointInStroke(point)){
-			console.log(point);
 			if(point.y===point.y2){
 				point.x+=5;
 			}
 			else if(point.x===point.x2){
 				point.y+=5;
 			}
-			console.log(point);
 			return point; 
 		}
 	}
 	
 }
+
+function storeData(){
+	var ajaxRequest;  // The variable that makes Ajax possible!
+               
+               try {
+                  // Opera 8.0+, Firefox, Safari
+                  ajaxRequest = new XMLHttpRequest();
+               }catch (e) {
+                  // Internet Explorer Browsers
+                  try {
+                     ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+                  }catch (e) {
+                     try{
+                        ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                     }catch (e){
+                        // Something went wrong
+                        alert("Your browser broke!");
+                        return false;
+                     }
+                  }
+               }
+               
+               // Create a function that will receive data 
+               // sent from the server and will update
+               // div section in the same page.
+					
+               ajaxRequest.onreadystatechange = function(){
+                  if(ajaxRequest.readyState == 4){
+                     //var ajaxDisplay = document.getElementById('ajaxDiv');
+                     //ajaxDisplay.innerHTML = ajaxRequest.responseText;
+                  }
+               }
+               
+               // Now get the value from user and pass it to
+               // server script.
+					
+               var path = document.getElementById('numb').value;
+               var quantity = document.getElementById('quantity').value;
+               var queryString = "?path=" + path ;
+            
+               queryString +=  "&quantity=" + quantity ;
+               ajaxRequest.open("GET", "storedata.php" + queryString, true);
+               ajaxRequest.send(null); 
+			   kati(path,quantity);
+            }
+	
 
 
 //------------------------------------------------
@@ -639,19 +666,3 @@ function makeDraggable(evt) {
       };
     }
 }
-
-/*function show_svg()
-{
-  var svg = document.getElementById("museum");
-  var serializer = new XMLSerializer();
-  var ser = serializer.serializeToString(svg);
-  var w = window.open();
-  w.document.open();
-  w.document.write(ser);
-  w.document.close();
-}*/
-
-
-
-
-

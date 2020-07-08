@@ -80,7 +80,7 @@ die;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="animation.php">
+            <a class="nav-link" href="animate.php">
               <span data-feather="edit-2"></span>
               Products
             </a>
