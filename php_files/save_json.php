@@ -24,7 +24,7 @@ if(! $con)
 
 mysqli_select_db($con,"museumdb");
 
-if(!$loaded){
+if($loaded=="false"){
 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
 $id=mysqli_fetch_row($id_query);
 mysqli_query($con,'set character set UTF8');

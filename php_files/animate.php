@@ -6,7 +6,7 @@ if (!(isset($_SESSION['name'])))
 header ("location: ../index.html");
 die;
 }
-
+$name=$_GET['name'];
 ?>
 <!doctype html>
 <html lang="en">
@@ -77,6 +77,7 @@ die;
 		<input id="numb">
 		<label for="quantity">Quantity (between 1 and 100):</label>
 		<input  type="number" id="quantity" name="quantity" min="1" max="100">
+		<input type="hidden" id="name" name="name" value="<?php echo $name?>">
 		<button type="button" onclick='storeData()'>Submit</button>
 	
 	
@@ -87,7 +88,7 @@ die;
   
   <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
-					}  ?>','test');load_initializer();makeDraggable(evt)"> 
+					}  ?>','<?php echo $name?>');load_initializer();makeDraggable(evt)"> 
 		
 					
 					

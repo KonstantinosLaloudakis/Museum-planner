@@ -11,7 +11,7 @@ var box=true;
 var numImages=0;
 var doorcoords;
 var previous_peopleNum=0;
-var num=0;//pithani allagi onomatos
+var path_id=0;
 var boundaryX1 = 0;
 var boundaryX2 = 100;
 var boundaryY1 = 0;
@@ -261,6 +261,7 @@ function load(name,filename,array=null){
 	},1000);
 	
 }
+//updates the numImages variable with the number of images inside the museum
 function FindTotalImages(){
 	let images=[];
 	images=museum.getElementsByTagNameNS(svgNS,"image");
@@ -268,7 +269,7 @@ function FindTotalImages(){
 }
 
 
-//onclick function of the 8th button(door)
+//onclick function of the door button
 function createDoor(type){
 	if(flag){
 		if(!buttonPressed){
@@ -342,7 +343,7 @@ function createDoor(type){
 		alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
 	}
 }
-
+//check if this set of coords belongs to a rect(room) or polyline(museum)
 function checkCoords(x,y){
 	var returnVal=false;
 	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
@@ -410,6 +411,7 @@ function save_json(museum_name=null,loaded=false){
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	var data=''+ "json=" + jsonString + "&name="+name +"&loaded=" + loaded;
 	xhr.send(data);
+	console.log(data);
 	alert(name + " saved successfully!!")
 	
 	
@@ -441,17 +443,19 @@ function load_initializer(){
 	
 }
 
-
-	function kati(array,peopleNum){
+//creates a route based on parameters given by the user
+//array represents the path that each user takes
+//peopleNum represents the number of people that enter the museum at the same time and have the same path
+function createAnimation(array,peopleNum){
 	var point=museum.createSVGPoint();
 	var path;
 	point=findDoor();
 	var myImage=[];
-	console.log(previous_peopleNum);
 	removePeople();
 	let svg = document.getElementById("museum");
 	if(svg.getCurrentTime() > 0)
-  svg.setCurrentTime(0);
+		svg.setCurrentTime(0);
+	
 	for(i=0;i<peopleNum;i++){
 			myImage[i] = document.createElementNS(svgNS,"image");
 			myImage[i].setAttributeNS(null,"height","10%");
@@ -468,7 +472,7 @@ function load_initializer(){
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
 			mpath.setAttributeNS(null,"fill","none");
-			mpath.setAttributeNS(null,"id","theMotionPath"+num);
+			mpath.setAttributeNS(null,"id","theMotionPath"+path_id);
 			
 			var ani = document.createElementNS(svgNS,"animateMotion");
 			ani.setAttributeNS(null,"dur", "30s");
@@ -476,29 +480,28 @@ function load_initializer(){
 			ani.setAttributeNS(null,"begin",i+'s');
 			
 			var mpathObj=document.createElementNS(svgNS,"mpath");
-			mpathObj.setAttribute("href","#theMotionPath"+num);
+			mpathObj.setAttribute("href","#theMotionPath"+path_id);
 			ani.appendChild(mpathObj)
 			myImage[i].appendChild(ani);
 			document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
-			console.log(mpath);
 	}
 	previous_peopleNum=peopleNum;
-	num++;
+	path_id++;
 	
 	
 }
+//this function deletes persons, who have already finished their animation
 function removePeople(){
 	var objects=museum.getElementsByTagNameNS(svgNS,"image");
-	console.log(objects);
 	for(i=0;i<previous_peopleNum;i++){
-		console.log(i);
 		var person=objects[numImages];
 		var parent=person.parentNode;
 		parent.removeChild(person);
 	}
-	console.log(parent);
+	
 }
+//this function creates the specific path for each animation
 function createPath(x,y,array){
 	var point=museum.createSVGPoint();
 	var path=" ";
@@ -520,6 +523,7 @@ function createPath(x,y,array){
 	return path;
 }
 
+//with this function we can find the door coordinates, so that people can start their animation from there
 function findDoor(){
 	var point = museum.createSVGPoint();
 	
@@ -542,7 +546,7 @@ function findDoor(){
 	}
 	
 }
-
+//save all data given to form in a database for further usage
 function storeData(){
 	var ajaxRequest;  // The variable that makes Ajax possible!
                
@@ -580,12 +584,13 @@ function storeData(){
 					
                var path = document.getElementById('numb').value;
                var quantity = document.getElementById('quantity').value;
+			   var museum_name=document.getElementById('name').value;
                var queryString = "?path=" + path ;
             
-               queryString +=  "&quantity=" + quantity ;
+               queryString +=  "&quantity=" + quantity +"&museum_name=" + museum_name ;
                ajaxRequest.open("GET", "storedata.php" + queryString, true);
                ajaxRequest.send(null); 
-			   kati(path,quantity);
+			   createAnimation(path,quantity);
             }
 	
 

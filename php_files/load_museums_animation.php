@@ -7,6 +7,21 @@ header ("location: ../index.html");
 die;
 }
 
+$username=$_SESSION['name'];
+	 $con = mysqli_connect("localhost","root","");
+
+if(! $con)
+{
+    die('Connection Failed'.mysql_error());
+}
+
+mysqli_select_db($con,"museumdb");
+	 
+	 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
+$id=mysqli_fetch_row($id_query);
+
+$result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\"");
+
 ?>
 
 <!doctype html>
@@ -74,13 +89,13 @@ die;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="load_museums.php">
+            <a class="nav-link" href="load.php">
               <span data-feather="loader"></span>
               Load museum
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="load_museums_animation.php">
+            <a class="nav-link" href="#">
               <span data-feather="edit-2"></span>
               Products
             </a>
@@ -110,23 +125,41 @@ die;
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-     <!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
-        </div>
-      </div>!-->
+     
+        <div id="content">
 
-     <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>!-->
+    <table class="table table-striped">
+     <thead>
+      <tr>
 
-      <iframe width="800" height="500" src="https://www.youtube.com/embed/Nrg70ImSfQ8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+       <?php
+	   if(mysqli_num_rows($result)==0){
+		   echo "<tr>";
+		   echo "<h1> Oh myyyy!! It seems that you haven't created any museum yet. Hit that 'Create your own museum' button and start creating one. You can do it! Believe in yourself!</h1>";
+		   echo "</tr>";
+	   }
+	   else{
+		   while($row = mysqli_fetch_array($result))
+			{
+			echo "<td>Name</td>";
+			echo "<td>Link</td>";
+			echo "<tr>";
+			echo "<td>" . $row['name'] . "</td>";
+			echo "<td>" . '<a href="animate.php?name='.$row['name'].'"> Link </a>' . "</td>";
+			echo "</tr>";
+			}
+	   }
+		mysqli_close($con);
+	   ?>
+	   
+      </tr>
+     </table>
+    </table>
+
+   </div>
+      
+
+     
     </main>
   </div>
 </div>

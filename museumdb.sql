@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Φιλοξενητής: 127.0.0.1
--- Χρόνος δημιουργίας: 01 Ιουλ 2020 στις 17:33:36
+-- Χρόνος δημιουργίας: 09 Ιουλ 2020 στις 17:07:38
 -- Έκδοση διακομιστή: 10.4.11-MariaDB
 -- Έκδοση PHP: 7.2.27
 
@@ -67,7 +67,27 @@ INSERT INTO `user_rooms` (`user_rooms_id`, `name`, `user_id`) VALUES
 (3, 'museum', 6),
 (4, 'makis', 6),
 (7, 'kyj', 6),
-(11, 'test', 4);
+(32, 'test', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Δομή πίνακα για τον πίνακα `visitors`
+--
+
+CREATE TABLE `visitors` (
+  `visitors_id` int(255) NOT NULL,
+  `path` varchar(1000) NOT NULL,
+  `number_visitors` int(100) NOT NULL,
+  `room_id` int(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Άδειασμα δεδομένων του πίνακα `visitors`
+--
+
+INSERT INTO `visitors` (`visitors_id`, `path`, `number_visitors`, `room_id`) VALUES
+(48, '1,2,3,4,5', 6, 32);
 
 --
 -- Ευρετήρια για άχρηστους πίνακες
@@ -87,6 +107,13 @@ ALTER TABLE `user_rooms`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Ευρετήρια για πίνακα `visitors`
+--
+ALTER TABLE `visitors`
+  ADD PRIMARY KEY (`visitors_id`),
+  ADD KEY `room_id` (`room_id`);
+
+--
 -- AUTO_INCREMENT για άχρηστους πίνακες
 --
 
@@ -100,7 +127,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT για πίνακα `user_rooms`
 --
 ALTER TABLE `user_rooms`
-  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `user_rooms_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT για πίνακα `visitors`
+--
+ALTER TABLE `visitors`
+  MODIFY `visitors_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Περιορισμοί για άχρηστους πίνακες
@@ -111,6 +144,12 @@ ALTER TABLE `user_rooms`
 --
 ALTER TABLE `user_rooms`
   ADD CONSTRAINT `user_rooms_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Περιορισμοί για πίνακα `visitors`
+--
+ALTER TABLE `visitors`
+  ADD CONSTRAINT `room_id` FOREIGN KEY (`room_id`) REFERENCES `user_rooms` (`user_rooms_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
