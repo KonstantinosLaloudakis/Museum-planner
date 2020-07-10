@@ -126,8 +126,7 @@ die;
 
      <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>!-->
 
-      <iframe width="800" height="500" src="https://www.youtube.com/embed/Nrg70ImSfQ8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </main>
+      </main>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

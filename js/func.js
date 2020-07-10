@@ -17,6 +17,8 @@ var boundaryX2 = 100;
 var boundaryY1 = 0;
 var boundaryY2 = 50;
 const museum = document.querySelector("#museum");
+var numDoors=0;
+var numWalls=0;
 
 var svgNS = "http://www.w3.org/2000/svg"; 
 var xlink= "http://www.w3.org/1999/xlink";
@@ -164,9 +166,10 @@ function createLine(){
 						line.setAttributeNS(null, 'x2', p.x);
 						line.setAttributeNS(null, 'y2', p.y);
 						line.setAttributeNS(null,"stroke","black");
+						line.setAttributeNS(null,"id","wall"+numWalls);
 						line.setAttribute("class","draggable confine");
 						document.getElementById("museum").appendChild(line);
-					
+						
 					}
 					//stop drawing when the mouse is up
 					const endDrawLine = (e) => {
@@ -184,6 +187,7 @@ function createLine(){
 		else{
 			alert("You have already pressed a button");
 		}
+		numWalls++;
 	}
 	else{
 			alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
@@ -316,8 +320,10 @@ function createDoor(type){
 				}
 				if(!aa){
 				line.setAttributeNS(null,"stroke","red");
+				line.setAttributeNS(null,"id","door"+numDoors);
 				line.setAttribute("class","draggable confine");
 				document.getElementById("museum").appendChild(line);
+				numDoors++;
 				museum.removeEventListener("click",_listener,true);
 					
 				
@@ -526,9 +532,17 @@ function createPath(x,y,array){
 //with this function we can find the door coordinates, so that people can start their animation from there
 function findDoor(){
 	var point = museum.createSVGPoint();
-	
+	var doors=[];
 	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
-	var doors=museum.getElementsByTagNameNS(svgNS,"line");
+	var doors_and_walls=museum.getElementsByTagNameNS(svgNS,"line");
+	for(i=0;i<doors_and_walls.length;i++){
+		var id=doors_and_walls[i].getAttributeNS(null,"id");
+		if(id.includes("door")){
+			doors.push(doors_and_walls[i]);
+		}
+			
+	}
+	
 	for(i=0;i<doors.length;i++){
 		point.x=parseFloat(doors[i].getAttributeNS(null,"x1"));
 		point.y=parseFloat(doors[i].getAttributeNS(null,"y1"));
