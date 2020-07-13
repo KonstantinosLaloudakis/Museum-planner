@@ -99,6 +99,7 @@ $name=$_GET['name'];
 
 <script  src="../js/func.js"></script>
 </main><!-- /.container -->
+<script type="text/javascript" src="..\bower_components\pathfinding\pathfinding-browser.min.js"></script>
 <script src="../js/jquery.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>

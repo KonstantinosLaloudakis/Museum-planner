@@ -19,9 +19,15 @@ var boundaryY2 = 50;
 const museum = document.querySelector("#museum");
 var numDoors=0;
 var numWalls=0;
+var obstacles;
+var grid;
+var gridBackup;
 
 var svgNS = "http://www.w3.org/2000/svg"; 
 var xlink= "http://www.w3.org/1999/xlink";
+
+
+
 
 const museumPoint = (elem, x, y) => {
   let p = museum.createSVGPoint();
@@ -30,6 +36,18 @@ const museumPoint = (elem, x, y) => {
   return p.matrixTransform(elem.getScreenCTM().inverse());
 }
 
+
+function create_obstacles_array(){
+	obstacles=new Array(50);
+	for( var i=0; i < 50 ; i++){
+
+            obstacles[i] = new Array(100);
+
+            for( var j=0;j< 100 ;j++){
+                obstacles[i][j] = 0;
+			}
+	}
+}
 //onclick function of the 1st button (image)
 //type determines the size of the image
 
@@ -462,18 +480,26 @@ function createAnimation(array,peopleNum){
 	if(svg.getCurrentTime() > 0)
 		svg.setCurrentTime(0);
 	
-	for(i=0;i<peopleNum;i++){
-			myImage[i] = document.createElementNS(svgNS,"image");
-			myImage[i].setAttributeNS(null,"height","10%");
-			myImage[i].setAttributeNS(null,"width","10%");
-			myImage[i].setAttributeNS(null,"x",point.x-(((parseInt(myImage[i].getAttributeNS(null,"width"))/100)*100)/2));
-			myImage[i].setAttributeNS(null,"y",point.y-(((parseInt(myImage[i].getAttributeNS(null,"height"))/100)*50)/2));
-			myImage[i].setAttributeNS(xlink,"href","../images/person.png");
+	for( var i=0;i<peopleNum;i++){
+			myImage[i] = document.createElementNS(svgNS,"circle");
+			//myImage[i].setAttributeNS(null,"height","10%");
+			//myImage[i].setAttributeNS(null,"width","10%");
+			myImage[i].setAttributeNS(null,"cx",point.x);
+			myImage[i].setAttributeNS(null,"cy",point.y);
+			myImage[i].setAttributeNS(null,"r","0.5");
 			myImage[i].setAttribute("class","confine");
-		
+			myImage[i].setAttributeNS(null,"fill","none");
+			myImage[i].setAttributeNS(null,"stroke","red");
+			myImage[i].setAttributeNS(null,"stroke-width","1");
+			initialize_obstacles();
+			//var grid = new PF.Grid(50, 100); 
+			//grid.setWalkableAt(0, 1, false);
+			grid=new PF.Grid(100,50,obstacles);
+			console.log(obstacles);
 			
-			path="M 0,0";
-			path+=createPath(parseFloat(myImage[i].getAttributeNS(null,"x")),parseFloat(myImage[i].getAttributeNS(null,"y")),array);
+			path="M ";
+			path+=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
+			//path+=createPath(parseInt(myImage[i].getAttributeNS(null,"x")),parseInt(myImage[i].getAttributeNS(null,"y")),array);
 			path+=" z";//+point.x +","+point.y;
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
@@ -491,9 +517,114 @@ function createAnimation(array,peopleNum){
 			myImage[i].appendChild(ani);
 			document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
+			console.log(path);
 	}
 	previous_peopleNum=peopleNum;
 	path_id++;
+	
+	
+}
+
+function initialize_obstacles(){
+	create_obstacles_array();
+	var walls=[];
+	var door=[];
+	var polyline=museum.getElementsByTagNameNS(svgNS,"polyline");
+	console.log(polyline);
+	var walls_and_door=museum.getElementsByTagNameNS(svgNS,"line");
+	for(i=0;i<walls_and_door.length;i++){
+		var id=walls_and_door[i].getAttributeNS(null,"id");
+		if(id.includes("wall")){
+			walls.push(walls_and_door[i]);
+		}
+		else{
+			door.push(walls_and_door[i]);
+		}
+	}
+	console.log(walls);
+	for(var i in walls){
+		var x1=parseInt(walls[i].getAttributeNS(null,"x1"));
+		var x2=parseInt(walls[i].getAttributeNS(null,"x2"));
+		var y1=parseInt(walls[i].getAttributeNS(null,"y1"));
+		var y2=parseInt(walls[i].getAttributeNS(null,"y2"));
+		add_obstacle(x1,y1,x2,y2);
+		//console.log("1");
+	}
+	points=polyline[0].points;
+	for(var k=0;k<points.length-1;k++){
+		console.log(points[k+1].x);
+		add_obstacle(points[k].x,points[k].y,points[k+1].x,points[k+1].y,door,true);
+	}
+	console.log(obstacles);
+	
+	
+	
+}
+
+function add_obstacle(x1,y1,x2,y2,door,polyline=false){
+	var temp;
+	if(x1>x2){
+		temp=x1;
+		x1=x2;
+		x2=temp;
+	}
+	if(y1>y2){
+		temp=y1;
+		y1=y2;
+		y2=temp;
+	}
+	
+	for(k=y1-1;k<=y2+1;k++){
+		for(l=x1-1;l<=x2+1;l++){
+			obstacles[k][l]=1;
+		}
+	
+	}
+	if(polyline){
+		console.log(door);
+		var x1=parseInt(door[0].getAttributeNS(null,"x1"));
+		var x2=parseInt(door[0].getAttributeNS(null,"x2"));
+		var y1=parseInt(door[0].getAttributeNS(null,"y1"));
+		var y2=parseInt(door[0].getAttributeNS(null,"y2"));
+		if(x1==x2){
+			if(x1<10){
+				for(var j=y1;j<=y2;j++){
+				for(i=0;i<5;i++){
+						obstacles[j][x1+i]=0;
+						obstacles[j][x2+i]=0;
+				}
+				}
+			}
+			else{
+				for(var j=y1;j<=y2;j++){
+				for(i=0;i<5;i++){
+						obstacles[j][x1-i]=0;
+						obstacles[j][x2-i]=0;
+				}
+				}
+			}
+		}
+		else if(y1==y2){
+			if(y1<10){
+				for(var j=x1;j<=x2;j++){
+				for(i=0;i<5;i++){
+						obstacles[y1+i][j]=0;
+						obstacles[y1+i][j]=0;
+				}
+				}
+			}
+			else{
+				for(var j=x1;j<=x2;j++){
+				for(i=0;i<5;i++){
+						obstacles[y1-i][j]=0;
+						obstacles[y1-i][j]=0;
+				}
+				}
+			}
+			
+		}
+		
+	}
 	
 	
 }
@@ -511,22 +642,140 @@ function removePeople(){
 function createPath(x,y,array){
 	var point=museum.createSVGPoint();
 	var path=" ";
+	var prev_x=0;
+	var prev_y=0;
 	var img=museum.getElementsByTagNameNS(svgNS,"image");
 		for(var i in array){
 			if(array[i]==",")
 				continue;
 			
 			
-			point.x=parseFloat(img[array[i]-1].getAttributeNS(null,"x"));
-			point.x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
+			point.x=parseInt(img[array[i]-1].getAttributeNS(null,"cx"));
+			//point.x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
 			point.x-=x;
-			point.y=parseFloat(img[array[i]-1].getAttributeNS(null,"y"));
-			point.y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
+			point.x=Math.floor(point.x);
+			point.y=parseInt(img[array[i]-1].getAttributeNS(null,"cy"));
+			//point.y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
 			point.y-=y;
+			point.y=Math.floor(point.y);
+			//console.log(point.x+","+point.y);
+			while(1){
+				if(prev_x==point.x && prev_y==point.y){
+					break;
+				}
+				if(prev_x<point.x){
+					prev_x++;
+				}
+				else if(prev_x>point.x){
+					prev_x--;
+				}
+				
+				if(prev_y<point.y){
+					prev_y++
+				}
+				else if(prev_y>point.y){
+					prev_y--;
+				}
+				
+				
+				path+=check_for_obstacles(prev_x,prev_y,x,y); 
+				
+				//console.log(path);
+			}
+			console.log("kati");
 			path+=point.x +',' + point.y +" ";
+			prev_x=point.x;
+			prev_y=point.y;
 		
 	}
 	return path;
+}
+
+function ftiaksepath(array,x,y){
+	var return_path="";
+	var finder;
+	var path1=[];
+	var point_x=0;
+	var point_y=0;
+	//var point=museum.createSVGPoint();
+	//var path=" ";
+	var prev_x=x;
+	var prev_y=y;
+	var home_x=prev_x;
+	var home_y=prev_y;
+	console.log(museum);
+	var img=museum.getElementsByTagNameNS(svgNS,"image");
+finder = new PF.DijkstraFinder();
+	console.log(img);
+	console.log(x+"," +y);
+	gridBackup=grid.clone();
+	console.log(gridBackup);
+		for(var i in array){
+			if(array[i]==",")
+				continue;
+			
+					
+			point_x=parseInt(img[array[i]-1].getAttributeNS(null,"x"));
+			console.log("To x einai"+point_x);
+			point_x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
+			//point.x+=x;
+			point_x=Math.floor(point_x);
+			point_y=parseInt(img[array[i]-1].getAttributeNS(null,"y"));
+			console.log("To y einai"+ point_y);
+			point_y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
+			//point.y+=y;
+			point_y=Math.floor(point_y);
+			console.log((prev_y)+"," +(prev_x)+", "+point_x+", "+point_y);
+			console.log("kiallo path");
+			
+			//console.log(grid);
+			path1 = finder.findPath((prev_x), (prev_y), point_x, point_y, grid.clone());
+			console.log(path1);
+			for(k=0;k<path1.length;k++){
+				console.log("1");
+				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
+			}
+			//console.log(path1);
+			console.log(return_path +"//////"+i);
+			prev_x=point_x;
+			prev_y=point_y;
+			console.log("/////"+i+"//"+prev_x+","+prev_y);
+			grid=gridBackup;
+		}
+		path1 = finder.findPath((prev_x), (prev_y), home_x, home_y, grid.clone());
+			console.log(path1);
+			for(k=0;k<path1.length;k++){
+				console.log("1");
+				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
+			}
+		return return_path;
+}
+
+function check_for_obstacles(x,y,offset_x,offset_y){
+	console.log((x+offset_x)+","+(y+offset_y));
+	if(obstacles[y+offset_y][x+offset_x]==1){
+		console.log("toixos");
+		return x+',' + (y)+" ";
+	}
+	/*else if(obstacles[y-1+offset_y][x+offset_x]==0){
+		return x+',' + (y-1)+" ";
+	}
+	else if(obstacles[y+1+offset_y][x+offset_x]==0){
+		return x+',' + (y+1)+" ";
+	}
+	else if(obstacles[y+offset_y][x-1+offset_x]==0){
+		return (x-1)+',' + y+" ";
+	}
+	else if(obstacles[y+offset_y][x+1+offset_x]==0){
+		return (x+1)+',' + y+" ";
+	}
+	else if(obstacles[y-2+offset_y][x-2+offset_x]==0){
+		return (x-2)+',' + (y-2)+" ";
+	}*/
+	else{
+		//console.log("lathos");
+		return x+','+y+" ";
+	}
 }
 
 //with this function we can find the door coordinates, so that people can start their animation from there
