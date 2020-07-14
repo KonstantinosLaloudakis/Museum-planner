@@ -472,7 +472,7 @@ function load_initializer(){
 //peopleNum represents the number of people that enter the museum at the same time and have the same path
 function createAnimation(array,peopleNum){
 	var point=museum.createSVGPoint();
-	var path;
+	var path="";
 	point=findDoor();
 	var myImage=[];
 	removePeople();
@@ -496,11 +496,12 @@ function createAnimation(array,peopleNum){
 			//grid.setWalkableAt(0, 1, false);
 			grid=new PF.Grid(100,50,obstacles);
 			console.log(obstacles);
-			
-			path="M ";
-			path+=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
-			//path+=createPath(parseInt(myImage[i].getAttributeNS(null,"x")),parseInt(myImage[i].getAttributeNS(null,"y")),array);
-			path+=" z";//+point.x +","+point.y;
+			if(path==""){
+				path="M ";
+				path+=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
+				//path+=createPath(parseInt(myImage[i].getAttributeNS(null,"x")),parseInt(myImage[i].getAttributeNS(null,"y")),array);
+				path+=" z";//+point.x +","+point.y;
+			}
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
 			mpath.setAttributeNS(null,"fill","none");
@@ -517,7 +518,7 @@ function createAnimation(array,peopleNum){
 			myImage[i].appendChild(ani);
 			document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
-			console.log(path);
+			console.log(museum);
 	}
 	previous_peopleNum=peopleNum;
 	path_id++;
@@ -555,12 +556,37 @@ function initialize_obstacles(){
 		console.log(points[k+1].x);
 		add_obstacle(points[k].x,points[k].y,points[k+1].x,points[k+1].y,door,true);
 	}
+	
+	add_image_as_obstacle();
 	console.log(obstacles);
 	
 	
 	
 }
-
+function add_image_as_obstacle(){
+	var img_obstacles=museum.getElementsByTagNameNS(svgNS,"image");
+	console.log(img_obstacles[0].getAttributeNS(null,"x"));
+	console.log(img_obstacles);
+	for(var img=0;img<img_obstacles.length;img++){
+		
+			var image_x=parseInt(img_obstacles[img].getAttributeNS(null,"x"));
+			var image_y=parseInt(img_obstacles[img].getAttributeNS(null,"y"));
+			var image_width=((parseInt(img_obstacles[img].getAttributeNS(null,"width")))*100)/100;
+			var image_height=((parseInt(img_obstacles[img].getAttributeNS(null,"height")))*50)/100;
+			var start=parseInt(image_x+(image_width/4));
+			var end=parseInt(image_x+image_width-(image_width/4));
+			console.log("eeeeeeeeeeeeeeeee"+start+","+end);
+			for( var j=start; j<end;j++) {
+					for( var k=image_y; k<=image_y+image_height;k++){
+						
+						obstacles[k][j]=1;
+						
+					}
+			}
+			obstacles[image_y][start]=0;
+	}
+	
+}
 function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	var temp;
 	if(x1>x2){
@@ -630,9 +656,12 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 }
 //this function deletes persons, who have already finished their animation
 function removePeople(){
-	var objects=museum.getElementsByTagNameNS(svgNS,"image");
-	for(i=0;i<previous_peopleNum;i++){
-		var person=objects[numImages];
+	var objects=museum.getElementsByTagNameNS(svgNS,"circle");
+	console.log(objects.length);
+	for(var object=0;object<objects.length;){
+		console.log("11111111111111111"+" "+object);
+		var person=objects[0];
+		console.log(person);
 		var parent=person.parentNode;
 		parent.removeChild(person);
 	}
@@ -705,37 +734,43 @@ function ftiaksepath(array,x,y){
 	var home_y=prev_y;
 	console.log(museum);
 	var img=museum.getElementsByTagNameNS(svgNS,"image");
-finder = new PF.DijkstraFinder();
+	finder = new PF.DijkstraFinder({
+		allowDiagonal: true,
+		dontCrossCorners: true
+	});
 	console.log(img);
 	console.log(x+"," +y);
 	gridBackup=grid.clone();
 	console.log(gridBackup);
+	//allaxe onoma
+	array=array.split(",");
 		for(var i in array){
-			if(array[i]==",")
+			if(array[i]==","){
+				console.log("Den doulepse to malakismeno");	
 				continue;
-			
+			}
 					
 			point_x=parseInt(img[array[i]-1].getAttributeNS(null,"x"));
 			console.log("To x einai"+point_x);
-			point_x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
+			var width=parseInt(img[array[i]-1].getAttributeNS(null,"width"));
+			point_x=point_x+(width/4);
+			//point_x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
 			//point.x+=x;
 			point_x=Math.floor(point_x);
 			point_y=parseInt(img[array[i]-1].getAttributeNS(null,"y"));
 			console.log("To y einai"+ point_y);
-			point_y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
+			//point_y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
 			//point.y+=y;
 			point_y=Math.floor(point_y);
 			console.log((prev_y)+"," +(prev_x)+", "+point_x+", "+point_y);
 			console.log("kiallo path");
 			
-			//console.log(grid);
 			path1 = finder.findPath((prev_x), (prev_y), point_x, point_y, grid.clone());
 			console.log(path1);
 			for(k=0;k<path1.length;k++){
 				console.log("1");
 				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
 			}
-			//console.log(path1);
 			console.log(return_path +"//////"+i);
 			prev_x=point_x;
 			prev_y=point_y;
