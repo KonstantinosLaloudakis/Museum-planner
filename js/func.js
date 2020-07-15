@@ -75,12 +75,18 @@ function createImage(type){
 				alert("Something wrong happened");
 			}
 			numImages++;
+			var title=document.createElementNS(svgNS,"title");
+			var titletext  = document.createTextNode("Exhibit "+numImages);
+			title.appendChild(titletext);
+			myImage.appendChild(title);
 			myImage.setAttributeNS(null,"id","img"+numImages);
+			//myImage.setAttributeNS(null,"title","img"+numImages);
 			myImage.setAttributeNS(null,"x",start.x-(((parseInt(myImage.getAttributeNS(null,"width"))/100)*100)/2));
 			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*50)/2));
 			myImage.setAttribute("class","draggable confine");
 			document.getElementById("museum").appendChild(myImage);
 			museum.removeEventListener("click",_listener,true);
+			console.log(myImage);
 		},true);
 	}
 	else{
@@ -491,6 +497,10 @@ function createAnimation(array,peopleNum){
 			myImage[i].setAttributeNS(null,"fill","none");
 			myImage[i].setAttributeNS(null,"stroke","red");
 			myImage[i].setAttributeNS(null,"stroke-width","1");
+			var title=document.createElementNS(svgNS,"title");
+			var titletext  = document.createTextNode("Visitor "+i);
+			title.appendChild(titletext);
+			myImage[i].appendChild(title);
 			initialize_obstacles();
 			//var grid = new PF.Grid(50, 100); 
 			//grid.setWalkableAt(0, 1, false);
@@ -722,6 +732,7 @@ function createPath(x,y,array){
 
 function ftiaksepath(array,x,y){
 	var return_path="";
+	var random_num;
 	var finder;
 	var path1=[];
 	var point_x=0;
@@ -734,14 +745,36 @@ function ftiaksepath(array,x,y){
 	var home_y=prev_y;
 	console.log(museum);
 	var img=museum.getElementsByTagNameNS(svgNS,"image");
-	finder = new PF.DijkstraFinder({
-		allowDiagonal: true,
-		dontCrossCorners: true
-	});
-	console.log(img);
-	console.log(x+"," +y);
+	random_num=Math.floor(Math.random() * 3);  // random numbers 0-2
+	switch(random_num){
+		case 0:
+			finder = new PF.DijkstraFinder({
+				allowDiagonal: true,
+				dontCrossCorners: true
+			});
+			console.log("Dijkstra");
+			break;
+		case 1:
+			finder = new PF.AStarFinder({
+				allowDiagonal: true,
+				dontCrossCorners: true
+			});
+			console.log("A*");
+			break;
+		case 2:
+			finder=new PF.BreadthFirstFinder({
+				allowDiagonal: true,
+				dontCrossCorners: true
+			});
+			console.log("BFS");
+			break;
+		
+		
+	
+	}
+	console.log(finder);
+	console.log(random_num);
 	gridBackup=grid.clone();
-	console.log(gridBackup);
 	//allaxe onoma
 	array=array.split(",");
 		for(var i in array){
