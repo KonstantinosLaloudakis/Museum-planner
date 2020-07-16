@@ -22,6 +22,8 @@ var numWalls=0;
 var obstacles;
 var grid;
 var gridBackup;
+var first_time=0;
+
 
 var svgNS = "http://www.w3.org/2000/svg"; 
 var xlink= "http://www.w3.org/1999/xlink";
@@ -57,18 +59,18 @@ function createImage(type){
 			var myImage = document.createElementNS(svgNS,"image");
 			var start= museumPoint(museum,event.clientX,event.clientY);
 			if(type=="small"){
-				myImage.setAttributeNS(null,"height","10%");
-				myImage.setAttributeNS(null,"width","10%");
+				myImage.setAttributeNS(null,"height","5");
+				myImage.setAttributeNS(null,"width","3");
 				myImage.setAttributeNS(xlink,"href","../images/small.png");
 			}
 			else if(type=="medium"){
-				myImage.setAttributeNS(null,"height","20%");
-				myImage.setAttributeNS(null,"width","20%");
+				myImage.setAttributeNS(null,"height","8");
+				myImage.setAttributeNS(null,"width","4");
 				myImage.setAttributeNS(xlink,"href","../images/sparta.png");
 			}
 			else if(type=="large"){
-				myImage.setAttributeNS(null,"height","30%");
-				myImage.setAttributeNS(null,"width","30%");
+				myImage.setAttributeNS(null,"height","10");
+				myImage.setAttributeNS(null,"width","10");
 				myImage.setAttributeNS(xlink,"href","../images/europi.jpeg");
 			}
 			else{
@@ -476,26 +478,50 @@ function load_initializer(){
 //creates a route based on parameters given by the user
 //array represents the path that each user takes
 //peopleNum represents the number of people that enter the museum at the same time and have the same path
-function createAnimation(array,peopleNum){
+function createAnimation(array,peopleNum,visitor_category){
+	console.log(visitor_category);
 	var point=museum.createSVGPoint();
 	var path="";
+	var time;
 	point=findDoor();
 	var myImage=[];
-	removePeople();
+	//removePeople();
 	let svg = document.getElementById("museum");
-	if(svg.getCurrentTime() > 0)
+	if(first_time){
+		if(svg.getCurrentTime() > 0)
+			time=svg.getCurrentTime();
+
+	}
+	else{
 		svg.setCurrentTime(0);
-	
+		time=0;
+	}
+	first_time=1;	
 	for( var i=0;i<peopleNum;i++){
 			myImage[i] = document.createElementNS(svgNS,"circle");
 			//myImage[i].setAttributeNS(null,"height","10%");
 			//myImage[i].setAttributeNS(null,"width","10%");
 			myImage[i].setAttributeNS(null,"cx",point.x);
 			myImage[i].setAttributeNS(null,"cy",point.y);
-			myImage[i].setAttributeNS(null,"r","0.5");
+			myImage[i].setAttributeNS(null,"r","0.3");
+			myImage[i].setAttributeNS(null,"opacity","1");
 			myImage[i].setAttribute("class","confine");
 			myImage[i].setAttributeNS(null,"fill","none");
-			myImage[i].setAttributeNS(null,"stroke","red");
+			switch(parseInt(visitor_category)){
+				case 1:
+						myImage[i].setAttributeNS(null,"stroke","green");
+						break;
+				
+				case 2:
+						myImage[i].setAttributeNS(null,"stroke","red");
+						break;
+				
+				case 3:
+						myImage[i].setAttributeNS(null,"stroke","blue");
+						break;
+				
+			}
+			
 			myImage[i].setAttributeNS(null,"stroke-width","1");
 			var title=document.createElementNS(svgNS,"title");
 			var titletext  = document.createTextNode("Visitor "+i);
@@ -515,17 +541,27 @@ function createAnimation(array,peopleNum){
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
 			mpath.setAttributeNS(null,"fill","none");
-			mpath.setAttributeNS(null,"id","theMotionPath"+path_id);
+			mpath.setAttributeNS(null,"id","theMotionPath"+path_id+ visitor_category);
 			
 			var ani = document.createElementNS(svgNS,"animateMotion");
 			ani.setAttributeNS(null,"dur", "30s");
 			ani.setAttributeNS(null,"repeatCount", "1");
-			ani.setAttributeNS(null,"begin",i+'s');
+			ani.setAttributeNS(null,"begin",(i+time)+'s');
 			
+			
+			var anim_end=document.createElementNS(svgNS,"animate");
+			anim_end.setAttributeNS(null,"attributeName","opacity");
+			anim_end.setAttributeNS(null,"dur","1");
+			anim_end.setAttributeNS(null,"begin",(i+time+30)+'s');
+			anim_end.setAttributeNS(null,"fill","freeze");
+			anim_end.setAttributeNS(null,"from","1");
+			anim_end.setAttributeNS(null,"to","0");
+			anim_end.setAttributeNS(null,"repeatCount","0");
 			var mpathObj=document.createElementNS(svgNS,"mpath");
-			mpathObj.setAttribute("href","#theMotionPath"+path_id);
+			mpathObj.setAttribute("href","#theMotionPath"+path_id+ visitor_category);
 			ani.appendChild(mpathObj)
 			myImage[i].appendChild(ani);
+			myImage[i].appendChild(anim_end);
 			document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
 			console.log(museum);
@@ -581,19 +617,19 @@ function add_image_as_obstacle(){
 		
 			var image_x=parseInt(img_obstacles[img].getAttributeNS(null,"x"));
 			var image_y=parseInt(img_obstacles[img].getAttributeNS(null,"y"));
-			var image_width=((parseInt(img_obstacles[img].getAttributeNS(null,"width")))*100)/100;
-			var image_height=((parseInt(img_obstacles[img].getAttributeNS(null,"height")))*50)/100;
-			var start=parseInt(image_x+(image_width/4));
-			var end=parseInt(image_x+image_width-(image_width/4));
-			console.log("eeeeeeeeeeeeeeeee"+start+","+end);
-			for( var j=start; j<end;j++) {
-					for( var k=image_y; k<=image_y+image_height;k++){
+			var image_width=parseInt(img_obstacles[img].getAttributeNS(null,"width"));
+			var image_height=parseInt(img_obstacles[img].getAttributeNS(null,"height"));
+			//var start=parseInt(image_x+(image_width);
+			//var end=parseInt(image_x+image_width-(image_width/4));
+			//console.log("eeeeeeeeeeeeeeeee"+start+","+end);
+			for( var j=image_x; j<image_x+image_width;j++) {
+					for( var k=image_y; k<image_y+image_height;k++){
 						
 						obstacles[k][j]=1;
 						
 					}
 			}
-			obstacles[image_y][start]=0;
+			obstacles[image_y][image_x]=0;
 	}
 	
 }
@@ -611,7 +647,7 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	}
 	
 	for(k=y1-1;k<=y2+1;k++){
-		for(l=x1-1;l<=x2+1;l++){
+		for(l=x1+1;l<=x2+1;l++){
 			obstacles[k][l]=1;
 		}
 	
@@ -785,16 +821,16 @@ function ftiaksepath(array,x,y){
 					
 			point_x=parseInt(img[array[i]-1].getAttributeNS(null,"x"));
 			console.log("To x einai"+point_x);
-			var width=parseInt(img[array[i]-1].getAttributeNS(null,"width"));
-			point_x=point_x+(width/4);
+			//var width=parseInt(img[array[i]-1].getAttributeNS(null,"width"));
+			//point_x=point_x+(width/4);
 			//point_x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
 			//point.x+=x;
-			point_x=Math.floor(point_x);
+			//point_x=Math.floor(point_x);
 			point_y=parseInt(img[array[i]-1].getAttributeNS(null,"y"));
 			console.log("To y einai"+ point_y);
 			//point_y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
 			//point.y+=y;
-			point_y=Math.floor(point_y);
+			//point_y=Math.floor(point_y);
 			console.log((prev_y)+"," +(prev_x)+", "+point_x+", "+point_y);
 			console.log("kiallo path");
 			
@@ -916,12 +952,13 @@ function storeData(){
                var path = document.getElementById('numb').value;
                var quantity = document.getElementById('quantity').value;
 			   var museum_name=document.getElementById('name').value;
+			   var visitor_category=document.querySelector('input[name="ColorRadios"]:checked').value;
                var queryString = "?path=" + path ;
             
                queryString +=  "&quantity=" + quantity +"&museum_name=" + museum_name ;
                ajaxRequest.open("GET", "storedata.php" + queryString, true);
                ajaxRequest.send(null); 
-			   createAnimation(path,quantity);
+			   createAnimation(path,quantity,visitor_category);
             }
 	
 

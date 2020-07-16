@@ -139,10 +139,11 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
 		   echo "</tr>";
 	   }
 	   else{
-		   while($row = mysqli_fetch_array($result))
-			{
 			echo "<td>Name</td>";
 			echo "<td>Link</td>";
+		   while($row = mysqli_fetch_array($result))
+			{
+			
 			echo "<tr>";
 			echo "<td>" . $row['name'] . "</td>";
 			echo "<td>" . '<a href="load.php?name='.$row['name'].'"> Link </a>' . "</td>";

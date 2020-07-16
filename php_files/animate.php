@@ -72,17 +72,7 @@ $name=$_GET['name'];
 
 <main role="main">
 <div class="container-fluid h-100 ">
-	<form>
-		<label for="numb"> Path: </label>
-		<input id="numb">
-		<label for="quantity">Quantity (between 1 and 100):</label>
-		<input  type="number" id="quantity" name="quantity" min="1" max="100">
-		<input type="hidden" id="name" name="name" value="<?php echo $name?>">
-		<button type="button" onclick='storeData()'>Submit</button>
 	
-	
-	
-	</form>
   <div class="row justify-content-center h-100 ">
   <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
   
@@ -90,13 +80,46 @@ $name=$_GET['name'];
 		            echo $_SESSION['name']; 
 					}  ?>','<?php echo $name?>');load_initializer();makeDraggable(evt)"> 
 		
-					
-					
+			
 	</svg>				
   </div>
+  
 </div>
 </div>
-
+<div class="container" >
+<form class="form-inline">
+ <div class="form-group">
+		<label for="numb"> Path: </label>
+		<input id="numb">
+	</div>
+	 <div class="form-group">
+		<label for="quantity">Quantity (between 1 and 100):</label>
+		<input  type="number" id="quantity" name="quantity" min="1" max="100">
+	</div>
+		<input type="hidden" id="name" name="name" value="<?php echo $name?>">
+	 <div class="form-group">
+		<div class="form-check">
+		<input class="form-check-input" type="radio" name="ColorRadios" id="exampleRadios1" value="1" checked>
+			  <label class="form-check-label" for="exampleRadios1">
+				Οικογένεια 
+			  </label>
+			</div>
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="ColorRadios" id="exampleRadios2" value="2">
+			  <label class="form-check-label" for="exampleRadios2">
+				Σχολείο 
+			  </label>
+			</div>
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="ColorRadios" id="exampleRadios3" value="3">
+			  <label class="form-check-label" for="exampleRadios3">
+				Άλλοι επισκέπτες 
+			  </label>		
+			</div>
+		</div>
+		<button type="button" onclick='storeData()'>Submit</button>
+	</form>
+</div>
 <script  src="../js/func.js"></script>
 </main><!-- /.container -->
 <script type="text/javascript" src="..\bower_components\pathfinding\pathfinding-browser.min.js"></script>
