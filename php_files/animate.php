@@ -64,7 +64,7 @@ $name=$_GET['name'];
  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" onclick="kati()" data-toggle="tooltip"  title="Animate"><span data-feather="play"></span> <span class="sr-only">(current)</span></a>
+        <a class="nav-link" onclick="createHeatmap()" data-toggle="tooltip"  title="heatmap" id="heatmap"><span data-feather="play"></span> <span class="sr-only">(current)</span></a>
        
     </ul>
   </div>
@@ -74,14 +74,13 @@ $name=$_GET['name'];
 <div class="container-fluid h-100 ">
 	
   <div class="row justify-content-center h-100 ">
-  <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
-  
-  <svg id="museum" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
+  <div id="kati" class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+  <svg id="museum"  viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
 					}  ?>','<?php echo $name?>');load_initializer();makeDraggable(evt)"> 
 		
 			
-	</svg>				
+	</svg>	
   </div>
   
 </div>
@@ -123,6 +122,7 @@ $name=$_GET['name'];
 <script  src="../js/func.js"></script>
 </main><!-- /.container -->
 <script type="text/javascript" src="..\bower_components\pathfinding\pathfinding-browser.min.js"></script>
+<script type="text/javascript" src="..\bower_components\heatmap.js-amd\build\heatmap.js"></script>
 <script src="../js/jquery.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>

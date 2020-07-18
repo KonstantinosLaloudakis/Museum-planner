@@ -23,6 +23,8 @@ var obstacles;
 var grid;
 var gridBackup;
 var first_time=0;
+var visiting_map;
+var first_time_visitor=0;
 
 
 var svgNS = "http://www.w3.org/2000/svg"; 
@@ -41,12 +43,14 @@ const museumPoint = (elem, x, y) => {
 
 function create_obstacles_array(){
 	obstacles=new Array(50);
+	visiting_map=new Array(50);
 	for( var i=0; i < 50 ; i++){
-
+			visiting_map[i]=new Array(100);
             obstacles[i] = new Array(100);
 
             for( var j=0;j< 100 ;j++){
                 obstacles[i][j] = 0;
+				visiting_map[i][j]=0;
 			}
 	}
 }
@@ -527,7 +531,10 @@ function createAnimation(array,peopleNum,visitor_category){
 			var titletext  = document.createTextNode("Visitor "+i);
 			title.appendChild(titletext);
 			myImage[i].appendChild(title);
-			initialize_obstacles();
+			if(!first_time_visitor){
+				initialize_obstacles();
+				first_time_visitor=1;
+			}
 			//var grid = new PF.Grid(50, 100); 
 			//grid.setWalkableAt(0, 1, false);
 			grid=new PF.Grid(100,50,obstacles);
@@ -564,7 +571,7 @@ function createAnimation(array,peopleNum,visitor_category){
 			myImage[i].appendChild(anim_end);
 			document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
-			console.log(museum);
+			console.log(visiting_map);
 	}
 	previous_peopleNum=peopleNum;
 	path_id++;
@@ -647,7 +654,7 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	}
 	
 	for(k=y1-1;k<=y2+1;k++){
-		for(l=x1+1;l<=x2+1;l++){
+		for(l=x1-1;l<=x2+1;l++){
 			obstacles[k][l]=1;
 		}
 	
@@ -838,6 +845,7 @@ function ftiaksepath(array,x,y){
 			console.log(path1);
 			for(k=0;k<path1.length;k++){
 				console.log("1");
+				visiting_map[path1[k][1]][path1[k][0]]+=1;
 				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
 			}
 			console.log(return_path +"//////"+i);
@@ -849,7 +857,8 @@ function ftiaksepath(array,x,y){
 		path1 = finder.findPath((prev_x), (prev_y), home_x, home_y, grid.clone());
 			console.log(path1);
 			for(k=0;k<path1.length;k++){
-				console.log("1");
+				visiting_map[path1[k][1]][path1[k][0]]+=1;
+				console.log("visiting map"+visiting_map[path1[k][1]][path1[k][0]]);
 				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
 			}
 		return return_path;
@@ -959,9 +968,90 @@ function storeData(){
                ajaxRequest.open("GET", "storedata.php" + queryString, true);
                ajaxRequest.send(null); 
 			   createAnimation(path,quantity,visitor_category);
-            }
+}
 	
 
+
+//document.getElementById("heatmap").addEventListener("click", createHeatmap);
+
+function createHeatmap(){
+	var max=0;
+	var config= {
+		container: document.getElementById("kati"),
+		radius: 10,
+		maxOpacity: 1,
+		minOpacity: 0,
+		blur: .45,
+		backgroundColor: 'rgba(0,0,0,.1)',
+		gradient: { 0.25: "rgb(0,0,255)", 0.55: "rgb(0,255,0)", 0.85: "yellow", 1.0: "rgb(255,0,0)"}
+  			
+	};
+	
+	var heatmapInstance=h337.create(config);
+	var x=document.getElementById("kati");
+	var div_x=x.offsetWidth;
+	var div_y=x.offsetHeight;
+	console.log(div_x+", "+div_y);
+	var y=document.getElementById("museum");
+	console.log(y);
+	
+	
+	
+	var data_x=div_x-y.clientWidth;
+	var data_y=div_y-y.clientHeight;
+	console.log("oooo"+data_x+", "+ data_y);
+	var polyline=museum.getElementsByTagNameNS(svgNS,"polyline");
+	let box=y.getBBox();
+	console.log('client',box);
+	var pol_points=polyline[0].points;
+	console.log(pol_points[0].x+",,,"+pol_points[0].y);
+	var mp=museumPoint(museum,pol_points[0].x,pol_points[0].y);
+	console.log(mp.x+"..."+mp.y);
+	var a_x=y.clientWidth/100;
+	var a_y=y.clientHeight/50;
+	console.log("iiiiiii"+a_x+", "+a_y);
+	console.log("aaaaa"+(data_x+(3*a_x))+", "+(data_y+(3*a_y)));
+	heatmapInstance.setDataMax(2);
+	heatmapInstance.setDataMin(0);
+	var datapoints=[];
+	for(var i=0;i<50;i++){
+		for(var j=0;j<100;j++){
+			console.log(i+"+++"+j+"++++"+visiting_map[i][j]);
+			if(visiting_map[i][j]>max){
+				max=visiting_map[i][j];
+			}
+			var dataPoint={
+				x:parseInt((data_x/2)+(j*a_x)),
+				y:parseInt((data_y)+(i*a_y)),
+				value:visiting_map[i][j]
+			};
+			datapoints.push(dataPoint);
+			
+		}
+		
+	}
+	
+	var data={
+		max:max,
+		min:1,
+		data: datapoints
+		
+	};
+	heatmapInstance.setData(data);
+	//console.log(museum_x+" ,"+museum_y+" eeeeeeee");
+	/*var dataPoint={
+		x:parseInt((data_x/2)+(3*a_x)),
+		y:parseInt((data_y)+(3*a_y)),
+		value:100
+	};
+	heatmapInstance.addData(dataPoint);
+	*/
+	
+	console.log(datapoints);
+	var current_data=heatmapInstance.getData();
+	console.log(current_data);
+	console.log(museum);
+}
 
 //------------------------------------------------
 
