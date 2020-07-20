@@ -65,7 +65,8 @@ $name=$_GET['name'];
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
         <a class="nav-link" onclick="createHeatmap()" data-toggle="tooltip"  title="heatmap" id="heatmap"><span data-feather="play"></span> <span class="sr-only">(current)</span></a>
-       
+       <li class="nav-item">
+        <a class="nav-link" id="btn11" onclick="save_heatmap()" data-toggle="tooltip"  title="Save museum&heatmap" ><span data-feather="save"></span></a>
     </ul>
   </div>
 </nav>
@@ -74,7 +75,7 @@ $name=$_GET['name'];
 <div class="container-fluid h-100 ">
 	
   <div class="row justify-content-center h-100 ">
-  <div id="kati" class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+  <div id="heatmap_svg" class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
   <svg id="museum"  viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
 					}  ?>','<?php echo $name?>');load_initializer();makeDraggable(evt)"> 
@@ -121,6 +122,7 @@ $name=$_GET['name'];
 </div>
 <script  src="../js/func.js"></script>
 </main><!-- /.container -->
+<script type="text/javascript" src="..\bower_components\dom-to-image\src\dom_to_image.js"></script>
 <script type="text/javascript" src="..\bower_components\pathfinding\pathfinding-browser.min.js"></script>
 <script type="text/javascript" src="..\bower_components\heatmap.js-amd\build\heatmap.js"></script>
 <script src="../js/jquery.min.js"></script>

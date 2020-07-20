@@ -764,7 +764,7 @@ function createPath(x,y,array){
 				
 				//console.log(path);
 			}
-			console.log("kati");
+			//console.log("kati");
 			path+=point.x +',' + point.y +" ";
 			prev_x=point.x;
 			prev_y=point.y;
@@ -977,7 +977,7 @@ function storeData(){
 function createHeatmap(){
 	var max=0;
 	var config= {
-		container: document.getElementById("kati"),
+		container: document.getElementById("heatmap_svg"),
 		radius: 10,
 		maxOpacity: 1,
 		minOpacity: 0,
@@ -988,7 +988,7 @@ function createHeatmap(){
 	};
 	
 	var heatmapInstance=h337.create(config);
-	var x=document.getElementById("kati");
+	var x=document.getElementById("heatmap_svg");
 	var div_x=x.offsetWidth;
 	var div_y=x.offsetHeight;
 	console.log(div_x+", "+div_y);
@@ -1051,6 +1051,100 @@ function createHeatmap(){
 	var current_data=heatmapInstance.getData();
 	console.log(current_data);
 	console.log(museum);
+}
+
+function save_heatmap(){
+var name = prompt("Please enter a name for the file:", "Sergio Araujo");
+  if (name == null || name == "") {
+    alert("User cancelled the prompt.");
+  } else {
+    alert("Download file to local storage");
+  }
+  
+
+	var node = document.getElementById('heatmap_svg');
+
+domtoimage.toPng(node)
+    .then(function (dataUrl) {
+        var img = new Image();
+        img.src = dataUrl;
+        //document.body.appendChild(img);
+		
+		 var link = document.createElement('a');
+        link.download = name + '.png';
+        link.href = dataUrl;
+        link.click();
+    })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
+    });
+	
+	
+	
+	/* var nodesToRecover = [];
+        var nodesToRemove = [];
+		var clone=museum.cloneNode(true);
+        var svgElems = clone.getElementsByTagName("image");
+		console.log(svgElems);
+		for (var i=0; i<svgElems.length; i++) {
+            var node = svgElems[i];
+            var parentNode = node.parentNode;
+            var svg = parentNode.innerHTML;
+
+            var canvas = document.createElement('canvas');
+
+            canvg(canvas, svg);
+
+            nodesToRecover.push({
+                parent: parentNode,
+                child: node
+            });
+            parentNode.removeChild(node);
+
+            nodesToRemove.push({
+                parent: parentNode,
+                child: canvas
+            });
+
+            parentNode.appendChild(canvas);
+        }
+	
+	html2canvas(document.querySelector("#heatmap_svg"), {
+  onrendered: function (canvas) {
+    var a = document.createElement('div');
+    a.href = canvas.toDataURL();
+    a.download = 'test.png';
+    a.click();
+    $canvas.remove(); //removes canvas from body
+  }
+});
+
+	*/
+	
+
+
+	/*var div = document.getElementById("heatmap_svg");
+	tempDiv = document.createElement("div");
+	tempDiv=div.cloneNode(true);
+	var svgText = tempDiv.innerHTML;
+	jsonString = JSON.stringify(svgText);
+	var xhr = new XMLHttpRequest();
+	
+
+		
+	xhr.open("POST","save_heatmap_image.php",true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	var data=''+ "json=" + jsonString + "&name="+museum_name;
+	xhr.send(data);
+	console.log(data);
+	alert(name + " saved successfully!!")
+	
+	
+	
+	*/
+	
+	
+	
 }
 
 //------------------------------------------------
