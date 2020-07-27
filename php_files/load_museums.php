@@ -60,7 +60,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
   </head>
   <body>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" > 
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="welcome.php"> 
   <span data-feather="user"></span>
   <?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
@@ -85,37 +85,19 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
           <li class="nav-item">
             <a class="nav-link active" href="public.php">
               <span data-feather="plus-square"></span>
-              Create your own museum<span class="sr-only">(current)</span>
+              Create your own museum
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="load.php">
+            <a class="nav-link" href="load_museums.php">
               <span data-feather="loader"></span>
-              Load museum
+              Load museum<span class="sr-only">(current)</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="edit-2"></span>
-              Products
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="users"></span>
-              Customers
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Statistics
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Integrations
+         <li class="nav-item">
+            <a class="nav-link" href="AboutUs.php">
+              <span data-feather="info"></span>
+              About Us
             </a>
           </li>
         </ul>
@@ -128,7 +110,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
      
         <div id="content">
 
-    <table class="table table-striped">
+    <table class="table table-hover">
      <thead>
       <tr>
 
@@ -139,14 +121,18 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
 		   echo "</tr>";
 	   }
 	   else{
-			echo "<td>Name</td>";
-			echo "<td>Link</td>";
+			echo "<th>Museum Name</th>";
+			echo "<th>Load Museum</th>";
+			echo "<th>Animate Movement</th>";
+			echo "</thead>";
+			echo "<tbody>";
 		   while($row = mysqli_fetch_array($result))
 			{
 			
 			echo "<tr>";
 			echo "<td>" . $row['name'] . "</td>";
-			echo "<td>" . '<a href="load.php?name='.$row['name'].'"> Link </a>' . "</td>";
+			echo "<td>" . '<a href="load.php?name='.$row['name'].'"> Show more </a>' . "</td>";
+			echo "<td>" . '<a href="animate.php?name='.$row['name'].'"> Show more</a>' . "</td>";
 			echo "</tr>";
 			}
 	   }
@@ -154,8 +140,9 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
 	   ?>
 	   
       </tr>
+	  </tbody>
      </table>
-    </table>
+    
 
    </div>
       

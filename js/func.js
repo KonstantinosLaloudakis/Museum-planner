@@ -12,10 +12,10 @@ var numImages=0;
 var doorcoords;
 var previous_peopleNum=0;
 var path_id=0;
-var boundaryX1 = 0;
-var boundaryX2 = 100;
-var boundaryY1 = 0;
-var boundaryY2 = 50;
+var boundaryX1 = 7;
+var boundaryX2 = 95;
+var boundaryY1 = 7;
+var boundaryY2 = 45;
 const museum = document.querySelector("#museum");
 var numDoors=0;
 var numWalls=0;
@@ -86,13 +86,12 @@ function createImage(type){
 			title.appendChild(titletext);
 			myImage.appendChild(title);
 			myImage.setAttributeNS(null,"id","img"+numImages);
-			//myImage.setAttributeNS(null,"title","img"+numImages);
 			myImage.setAttributeNS(null,"x",start.x-(((parseInt(myImage.getAttributeNS(null,"width"))/100)*100)/2));
 			myImage.setAttributeNS(null,"y",start.y-(((parseInt(myImage.getAttributeNS(null,"height"))/100)*50)/2));
 			myImage.setAttribute("class","draggable confine");
 			document.getElementById("museum").appendChild(myImage);
 			museum.removeEventListener("click",_listener,true);
-			console.log(myImage);
+			//console.log(myImage);
 		},true);
 	}
 	else{
@@ -315,11 +314,11 @@ function createDoor(type){
 				var start= museumPoint(museum,event.clientX,event.clientY);
 				
 				
-					console.log("1");
-					console.log(start.x,start.y);
+					//console.log("1");
+					//console.log(start.x,start.y);
 					if(checkCoords(start.x,start.y)){
 						
-					console.log("2");
+					//console.log("2");
 				if(type=="horizontal"){
 					if(checkCoords(start.x-5,start.y) &&  checkCoords(start.x-5,start.y)){
 					line.setAttributeNS(null, 'x1', start.x-5);
@@ -362,8 +361,8 @@ function createDoor(type){
 				}
 				
 				else{
-					console.log(checkCoords(start.x,start.y));
-					console.log("3");
+					//console.log(checkCoords(start.x,start.y));
+					//console.log("3");
 					alert("Kopsou paidaki");
 				}
 					
@@ -387,7 +386,7 @@ function checkCoords(x,y){
 	let point = museum.createSVGPoint();
 	point.x=x;
 	point.y=y;
-	console.log(rects);
+	//console.log(rects);
 	for(i=0;i<rects.length;i++){
 		returnVal=returnVal || rects[i].isPointInStroke(point);
 	}
@@ -423,8 +422,8 @@ function save_json(museum_name=null,loaded=false){
 		  'name':name,
 	  },
       success: function (response) {
-		  console.log(name);
-		  console.log(response);
+		  //console.log(name);
+		  //console.log(response);
       //get response from your php page (what you echo or print)
         if(response =='True'){
 			alert(name +" already exists");
@@ -438,7 +437,7 @@ function save_json(museum_name=null,loaded=false){
 	tempDiv=museum.cloneNode(true);
 	var svgText = tempDiv.innerHTML;
 	jsonString = JSON.stringify(svgText);
-	console.log(loaded);
+	console.log(museum);
 	var xhr = new XMLHttpRequest();
 	
 
@@ -447,31 +446,13 @@ function save_json(museum_name=null,loaded=false){
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	var data=''+ "json=" + jsonString + "&name="+name +"&loaded=" + loaded;
 	xhr.send(data);
-	console.log(data);
+	//console.log(data);
 	alert(name + " saved successfully!!")
 	
 	
 	
 }
 
-//not yet used
-function download(data, filename, type) {
-    var file = new Blob([data], {type: type});
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);
-    else { // Others
-        var a = document.createElement("a"),
-                url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);  
-        }, 0); 
-    }
-}
 
 function load_initializer(){
 	flag=true;
@@ -483,13 +464,12 @@ function load_initializer(){
 //array represents the path that each user takes
 //peopleNum represents the number of people that enter the museum at the same time and have the same path
 function createAnimation(array,peopleNum,visitor_category){
-	console.log(visitor_category);
+	//console.log(visitor_category);
 	var point=museum.createSVGPoint();
 	var path="";
 	var time;
 	point=findDoor();
 	var myImage=[];
-	//removePeople();
 	let svg = document.getElementById("museum");
 	if(first_time){
 		if(svg.getCurrentTime() > 0)
@@ -535,15 +515,13 @@ function createAnimation(array,peopleNum,visitor_category){
 				initialize_obstacles();
 				first_time_visitor=1;
 			}
-			//var grid = new PF.Grid(50, 100); 
-			//grid.setWalkableAt(0, 1, false);
+			
 			grid=new PF.Grid(100,50,obstacles);
-			console.log(obstacles);
+			//console.log(obstacles);
 			if(path==""){
 				path="M ";
 				path+=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
-				//path+=createPath(parseInt(myImage[i].getAttributeNS(null,"x")),parseInt(myImage[i].getAttributeNS(null,"y")),array);
-				path+=" z";//+point.x +","+point.y;
+				path+=" z";
 			}
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
@@ -571,7 +549,7 @@ function createAnimation(array,peopleNum,visitor_category){
 			myImage[i].appendChild(anim_end);
 			document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
-			console.log(visiting_map);
+			//console.log(visiting_map);
 	}
 	previous_peopleNum=peopleNum;
 	path_id++;
@@ -584,7 +562,7 @@ function initialize_obstacles(){
 	var walls=[];
 	var door=[];
 	var polyline=museum.getElementsByTagNameNS(svgNS,"polyline");
-	console.log(polyline);
+	//console.log(polyline);
 	var walls_and_door=museum.getElementsByTagNameNS(svgNS,"line");
 	for(i=0;i<walls_and_door.length;i++){
 		var id=walls_and_door[i].getAttributeNS(null,"id");
@@ -595,40 +573,41 @@ function initialize_obstacles(){
 			door.push(walls_and_door[i]);
 		}
 	}
-	console.log(walls);
+	//console.log(walls);
 	for(var i in walls){
 		var x1=parseInt(walls[i].getAttributeNS(null,"x1"));
 		var x2=parseInt(walls[i].getAttributeNS(null,"x2"));
 		var y1=parseInt(walls[i].getAttributeNS(null,"y1"));
 		var y2=parseInt(walls[i].getAttributeNS(null,"y2"));
 		add_obstacle(x1,y1,x2,y2);
-		//console.log("1");
+		////console.log("1");
 	}
 	points=polyline[0].points;
 	for(var k=0;k<points.length-1;k++){
-		console.log(points[k+1].x);
+		//console.log(points[k+1].x);
 		add_obstacle(points[k].x,points[k].y,points[k+1].x,points[k+1].y,door,true);
 	}
 	
 	add_image_as_obstacle();
-	console.log(obstacles);
+	//console.log(obstacles);
 	
 	
 	
 }
 function add_image_as_obstacle(){
 	var img_obstacles=museum.getElementsByTagNameNS(svgNS,"image");
-	console.log(img_obstacles[0].getAttributeNS(null,"x"));
-	console.log(img_obstacles);
+	//console.log(img_obstacles[0].getAttributeNS(null,"x"));
+	//console.log(img_obstacles);
 	for(var img=0;img<img_obstacles.length;img++){
 		
 			var image_x=parseInt(img_obstacles[img].getAttributeNS(null,"x"));
+			transform_x=parseInt(img_obstacles[img].transform.baseVal[0].matrix.e);
+			image_x+=transform_x;
 			var image_y=parseInt(img_obstacles[img].getAttributeNS(null,"y"));
+			transform_y=parseInt(img_obstacles[img].transform.baseVal[0].matrix.f);
+			image_y+=transform_y;
 			var image_width=parseInt(img_obstacles[img].getAttributeNS(null,"width"));
 			var image_height=parseInt(img_obstacles[img].getAttributeNS(null,"height"));
-			//var start=parseInt(image_x+(image_width);
-			//var end=parseInt(image_x+image_width-(image_width/4));
-			//console.log("eeeeeeeeeeeeeeeee"+start+","+end);
 			for( var j=image_x; j<image_x+image_width;j++) {
 					for( var k=image_y; k<image_y+image_height;k++){
 						
@@ -660,7 +639,7 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	
 	}
 	if(polyline){
-		console.log(door);
+		//console.log(door);
 		var x1=parseInt(door[0].getAttributeNS(null,"x1"));
 		var x2=parseInt(door[0].getAttributeNS(null,"x2"));
 		var y1=parseInt(door[0].getAttributeNS(null,"y1"));
@@ -710,11 +689,11 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 //this function deletes persons, who have already finished their animation
 function removePeople(){
 	var objects=museum.getElementsByTagNameNS(svgNS,"circle");
-	console.log(objects.length);
+	//console.log(objects.length);
 	for(var object=0;object<objects.length;){
-		console.log("11111111111111111"+" "+object);
+		//console.log("11111111111111111"+" "+object);
 		var person=objects[0];
-		console.log(person);
+		//console.log(person);
 		var parent=person.parentNode;
 		parent.removeChild(person);
 	}
@@ -733,14 +712,11 @@ function createPath(x,y,array){
 			
 			
 			point.x=parseInt(img[array[i]-1].getAttributeNS(null,"cx"));
-			//point.x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
 			point.x-=x;
 			point.x=Math.floor(point.x);
 			point.y=parseInt(img[array[i]-1].getAttributeNS(null,"cy"));
-			//point.y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
 			point.y-=y;
 			point.y=Math.floor(point.y);
-			//console.log(point.x+","+point.y);
 			while(1){
 				if(prev_x==point.x && prev_y==point.y){
 					break;
@@ -780,14 +756,13 @@ function ftiaksepath(array,x,y){
 	var path1=[];
 	var point_x=0;
 	var point_y=0;
-	//var point=museum.createSVGPoint();
-	//var path=" ";
 	var prev_x=x;
 	var prev_y=y;
 	var home_x=prev_x;
 	var home_y=prev_y;
-	console.log(museum);
+	//console.log(museum);
 	var img=museum.getElementsByTagNameNS(svgNS,"image");
+	console.log(img);
 	random_num=Math.floor(Math.random() * 3);  // random numbers 0-2
 	switch(random_num){
 		case 0:
@@ -795,98 +770,83 @@ function ftiaksepath(array,x,y){
 				allowDiagonal: true,
 				dontCrossCorners: true
 			});
-			console.log("Dijkstra");
+			//console.log("Dijkstra");
 			break;
 		case 1:
 			finder = new PF.AStarFinder({
 				allowDiagonal: true,
 				dontCrossCorners: true
 			});
-			console.log("A*");
+			//console.log("A*");
 			break;
 		case 2:
 			finder=new PF.BreadthFirstFinder({
 				allowDiagonal: true,
 				dontCrossCorners: true
 			});
-			console.log("BFS");
+			//console.log("BFS");
 			break;
 		
 		
 	
 	}
-	console.log(finder);
-	console.log(random_num);
+	//console.log(finder);
+	//console.log(random_num);
 	gridBackup=grid.clone();
 	//allaxe onoma
 	array=array.split(",");
 		for(var i in array){
 			if(array[i]==","){
-				console.log("Den doulepse to malakismeno");	
+				//console.log("Den doulepse to malakismeno");	
 				continue;
 			}
 					
 			point_x=parseInt(img[array[i]-1].getAttributeNS(null,"x"));
-			console.log("To x einai"+point_x);
-			//var width=parseInt(img[array[i]-1].getAttributeNS(null,"width"));
-			//point_x=point_x+(width/4);
-			//point_x+=(((parseInt(img[array[i]-1].getAttributeNS(null,"width"))/100)*100)/2);
-			//point.x+=x;
-			//point_x=Math.floor(point_x);
+			transform_x=parseInt(img[array[i]-1].transform.baseVal[0].matrix.e);
+			point_x+=transform_x;
+			//console.log("To x einai"+point_x);
+			
 			point_y=parseInt(img[array[i]-1].getAttributeNS(null,"y"));
-			console.log("To y einai"+ point_y);
-			//point_y+=(((parseInt(img[array[i]-1].getAttributeNS(null,"height"))/100)*50)/2);
-			//point.y+=y;
-			//point_y=Math.floor(point_y);
-			console.log((prev_y)+"," +(prev_x)+", "+point_x+", "+point_y);
-			console.log("kiallo path");
+			transform_y=parseInt(img[array[i]-1].transform.baseVal[0].matrix.f);
+			point_y+=transform_y;
+			
+			//console.log("To y einai"+ point_y);
+			
+			//console.log((prev_y)+"," +(prev_x)+", "+point_x+", "+point_y);
+			
+			//console.log("kiallo path");
 			
 			path1 = finder.findPath((prev_x), (prev_y), point_x, point_y, grid.clone());
-			console.log(path1);
+			//console.log(path1);
 			for(k=0;k<path1.length;k++){
-				console.log("1");
+				//console.log("1");
 				visiting_map[path1[k][1]][path1[k][0]]+=1;
 				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
 			}
-			console.log(return_path +"//////"+i);
+			//console.log(return_path +"//////"+i);
 			prev_x=point_x;
 			prev_y=point_y;
-			console.log("/////"+i+"//"+prev_x+","+prev_y);
+			//console.log("/////"+i+"//"+prev_x+","+prev_y);
 			grid=gridBackup;
 		}
 		path1 = finder.findPath((prev_x), (prev_y), home_x, home_y, grid.clone());
-			console.log(path1);
+			//console.log(path1);
 			for(k=0;k<path1.length;k++){
 				visiting_map[path1[k][1]][path1[k][0]]+=1;
-				console.log("visiting map"+visiting_map[path1[k][1]][path1[k][0]]);
+				//console.log("visiting map"+visiting_map[path1[k][1]][path1[k][0]]);
 				return_path+=(path1[k][0]-x)+","+(path1[k][1]-y)+" ";
 			}
 		return return_path;
 }
 
 function check_for_obstacles(x,y,offset_x,offset_y){
-	console.log((x+offset_x)+","+(y+offset_y));
+	//console.log((x+offset_x)+","+(y+offset_y));
 	if(obstacles[y+offset_y][x+offset_x]==1){
-		console.log("toixos");
+		//console.log("toixos");
 		return x+',' + (y)+" ";
 	}
-	/*else if(obstacles[y-1+offset_y][x+offset_x]==0){
-		return x+',' + (y-1)+" ";
-	}
-	else if(obstacles[y+1+offset_y][x+offset_x]==0){
-		return x+',' + (y+1)+" ";
-	}
-	else if(obstacles[y+offset_y][x-1+offset_x]==0){
-		return (x-1)+',' + y+" ";
-	}
-	else if(obstacles[y+offset_y][x+1+offset_x]==0){
-		return (x+1)+',' + y+" ";
-	}
-	else if(obstacles[y-2+offset_y][x-2+offset_x]==0){
-		return (x-2)+',' + (y-2)+" ";
-	}*/
 	else{
-		//console.log("lathos");
+		////console.log("lathos");
 		return x+','+y+" ";
 	}
 }
@@ -948,12 +908,7 @@ function storeData(){
                // sent from the server and will update
                // div section in the same page.
 					
-               ajaxRequest.onreadystatechange = function(){
-                  if(ajaxRequest.readyState == 4){
-                     //var ajaxDisplay = document.getElementById('ajaxDiv');
-                     //ajaxDisplay.innerHTML = ajaxRequest.responseText;
-                  }
-               }
+               
                
                // Now get the value from user and pass it to
                // server script.
@@ -978,7 +933,7 @@ function createHeatmap(){
 	var max=0;
 	var config= {
 		container: document.getElementById("heatmap_svg"),
-		radius: 10,
+		radius: 36.6,
 		maxOpacity: 1,
 		minOpacity: 0,
 		blur: .45,
@@ -991,32 +946,32 @@ function createHeatmap(){
 	var x=document.getElementById("heatmap_svg");
 	var div_x=x.offsetWidth;
 	var div_y=x.offsetHeight;
-	console.log(div_x+", "+div_y);
+	//console.log(div_x+", "+div_y);
 	var y=document.getElementById("museum");
-	console.log(y);
+	//console.log(y);
 	
 	
 	
 	var data_x=div_x-y.clientWidth;
 	var data_y=div_y-y.clientHeight;
-	console.log("oooo"+data_x+", "+ data_y);
+	//console.log("oooo"+data_x+", "+ data_y);
 	var polyline=museum.getElementsByTagNameNS(svgNS,"polyline");
 	let box=y.getBBox();
-	console.log('client',box);
+	//console.log('client',box);
 	var pol_points=polyline[0].points;
-	console.log(pol_points[0].x+",,,"+pol_points[0].y);
+	//console.log(pol_points[0].x+",,,"+pol_points[0].y);
 	var mp=museumPoint(museum,pol_points[0].x,pol_points[0].y);
-	console.log(mp.x+"..."+mp.y);
+	//console.log(mp.x+"..."+mp.y);
 	var a_x=y.clientWidth/100;
 	var a_y=y.clientHeight/50;
-	console.log("iiiiiii"+a_x+", "+a_y);
-	console.log("aaaaa"+(data_x+(3*a_x))+", "+(data_y+(3*a_y)));
+	//console.log("iiiiiii"+a_x+", "+a_y);
+	//console.log("aaaaa"+(data_x+(3*a_x))+", "+(data_y+(3*a_y)));
 	heatmapInstance.setDataMax(2);
 	heatmapInstance.setDataMin(0);
 	var datapoints=[];
 	for(var i=0;i<50;i++){
 		for(var j=0;j<100;j++){
-			console.log(i+"+++"+j+"++++"+visiting_map[i][j]);
+			//console.log(i+"+++"+j+"++++"+visiting_map[i][j]);
 			if(visiting_map[i][j]>max){
 				max=visiting_map[i][j];
 			}
@@ -1038,19 +993,12 @@ function createHeatmap(){
 		
 	};
 	heatmapInstance.setData(data);
-	//console.log(museum_x+" ,"+museum_y+" eeeeeeee");
-	/*var dataPoint={
-		x:parseInt((data_x/2)+(3*a_x)),
-		y:parseInt((data_y)+(3*a_y)),
-		value:100
-	};
-	heatmapInstance.addData(dataPoint);
-	*/
-	
-	console.log(datapoints);
+	//console.log(datapoints);
 	var current_data=heatmapInstance.getData();
-	console.log(current_data);
-	console.log(museum);
+	//console.log(current_data);
+	//console.log(museum);
+	
+	
 }
 
 function save_heatmap(){
@@ -1078,73 +1026,6 @@ domtoimage.toPng(node)
     .catch(function (error) {
         console.error('oops, something went wrong!', error);
     });
-	
-	
-	
-	/* var nodesToRecover = [];
-        var nodesToRemove = [];
-		var clone=museum.cloneNode(true);
-        var svgElems = clone.getElementsByTagName("image");
-		console.log(svgElems);
-		for (var i=0; i<svgElems.length; i++) {
-            var node = svgElems[i];
-            var parentNode = node.parentNode;
-            var svg = parentNode.innerHTML;
-
-            var canvas = document.createElement('canvas');
-
-            canvg(canvas, svg);
-
-            nodesToRecover.push({
-                parent: parentNode,
-                child: node
-            });
-            parentNode.removeChild(node);
-
-            nodesToRemove.push({
-                parent: parentNode,
-                child: canvas
-            });
-
-            parentNode.appendChild(canvas);
-        }
-	
-	html2canvas(document.querySelector("#heatmap_svg"), {
-  onrendered: function (canvas) {
-    var a = document.createElement('div');
-    a.href = canvas.toDataURL();
-    a.download = 'test.png';
-    a.click();
-    $canvas.remove(); //removes canvas from body
-  }
-});
-
-	*/
-	
-
-
-	/*var div = document.getElementById("heatmap_svg");
-	tempDiv = document.createElement("div");
-	tempDiv=div.cloneNode(true);
-	var svgText = tempDiv.innerHTML;
-	jsonString = JSON.stringify(svgText);
-	var xhr = new XMLHttpRequest();
-	
-
-		
-	xhr.open("POST","save_heatmap_image.php",true);
-	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	var data=''+ "json=" + jsonString + "&name="+museum_name;
-	xhr.send(data);
-	console.log(data);
-	alert(name + " saved successfully!!")
-	
-	
-	
-	*/
-	
-	
-	
 }
 
 //------------------------------------------------
@@ -1153,6 +1034,8 @@ domtoimage.toPng(node)
 //makes all objects inside the viebox draggable
 function makeDraggable(evt) {
   var svg = evt.target;
+  var dragx;
+  var dragy;
   svg.addEventListener('mousedown', startDrag);
   svg.addEventListener('mousemove', drag);
   svg.addEventListener('mouseup', endDrag);
@@ -1162,22 +1045,16 @@ function makeDraggable(evt) {
 	if(!button2Clicked && !button4Clicked){
 		  
 		//constrain the movement of the objects inside the viewbox
-		confined = evt.target.classList.contains('confine');
-		if (confined) {
-			bbox = evt.target.getBBox();
-			minX = boundaryX1 - bbox.x;
-			maxX = boundaryX2 - bbox.x - bbox.width;
-			minY = boundaryY1 - bbox.y;
-			maxY = boundaryY2 - bbox.y - bbox.height;
-		}
 		
 		if (evt.target.classList.contains('draggable')) {
 			selectedElement = evt.target;
 			offset = getMousePosition(evt);
+			console.log(selectedElement.transform.baseVal[0].matrix.e);
    
 			var transforms = selectedElement.transform.baseVal;
+			console.log(transforms);
 			// Ensure the first transform is a translate transform
-			if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+			if (transforms.length === 0 || transforms.numberOfItems === 0 ||transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
 				// Create an transform that translates by (0, 0)
 				var translate = svg.createSVGTransform();
 				translate.setTranslate(0, 0);
@@ -1188,6 +1065,16 @@ function makeDraggable(evt) {
 			transform = transforms.getItem(0);
 			offset.x -= transform.matrix.e;
 			offset.y -= transform.matrix.f;
+		
+			confined = evt.target.classList.contains('confine');
+		if (confined) {
+			bbox = evt.target.getBBox();
+			minX = boundaryX1 - bbox.x;
+			maxX = boundaryX2 - bbox.x - bbox.width;
+			minY = boundaryY1 - bbox.y;
+			maxY = boundaryY2 - bbox.y - bbox.height;
+		}
+		
 		}
 	}
   }
@@ -1198,20 +1085,24 @@ function makeDraggable(evt) {
 		var coord = getMousePosition(evt);
 		var dx=coord.x - offset.x;
 		var dy=coord.y - offset.y;
-	
 		if (confined) {
 			if (dx < minX) { dx = minX; }
 			else if (dx > maxX) { dx = maxX; }
 			if (dy < minY) { dy = minY; }
 			else if (dy > maxY) { dy = maxY; }
 		}
+		transform.setTranslate(dx, dy);
 
-        transform.setTranslate(dx, dy);
+		
+		
 		
 	}
   }
   function endDrag(evt) {
-  	selectedElement = null;
+	  if(selectedElement){
+			selectedElement = false;
+			
+		}
   }
   
 

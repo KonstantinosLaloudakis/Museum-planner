@@ -85,7 +85,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
           <li class="nav-item">
             <a class="nav-link active" href="public.php">
               <span data-feather="plus-square"></span>
-              Create your own museum<span class="sr-only">(current)</span>
+              Create your own museum
             </a>
           </li>
           <li class="nav-item">
@@ -97,7 +97,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="edit-2"></span>
-              Products
+              Products<span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">

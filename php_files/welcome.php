@@ -7,6 +7,21 @@ header ("location: ../index.html");
 die;
 }
 
+
+$username=$_SESSION['name'];
+	 $con = mysqli_connect("localhost","root","");
+
+if(! $con)
+{
+    die('Connection Failed'.mysql_error());
+}
+
+mysqli_select_db($con,"museumdb");
+	 
+	 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
+$id=mysqli_fetch_row($id_query);
+
+$result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\"");
 ?>
 
 <!doctype html>
@@ -80,27 +95,9 @@ die;
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="load_museums_animation.php">
-              <span data-feather="edit-2"></span>
-              Products
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="users"></span>
-              Customers
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Statistics
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Integrations
+            <a class="nav-link" href="AboutUs.php">
+              <span data-feather="info"></span>
+              About Us
             </a>
           </li>
         </ul>
@@ -125,6 +122,35 @@ die;
       </div>!-->
 
      <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>!-->
+		<table class="table table-hover text-center" >
+			 <thead>
+			  <tr>
+
+			   <?php
+			   if(mysqli_num_rows($result)==0){
+				   echo "<tr>";
+				   echo "<h1> Oh myyyy!! It seems that you haven't created a museum yet. Hit that 'Create your own museum' button and start creating one. You can do it! Believe in yourself!</h1>";
+				   echo "</tr>";
+			   }
+			   else{
+					echo "<th >Museum Name</th>";
+					echo "</thead>";
+					echo "<tbody>";
+				   while($row = mysqli_fetch_array($result))
+					{
+					
+					echo "<tr>";
+					echo "<td>" . $row['name'] . "</td>";
+					echo "</tr>";
+					}
+			   }
+				mysqli_close($con);
+			   ?>
+			   
+			  </tr>
+			  </tbody>
+			 </table>
+			
 
       </main>
   </div>

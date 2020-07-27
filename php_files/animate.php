@@ -126,7 +126,6 @@ $name=$_GET['name'];
 <script type="text/javascript" src="..\bower_components\pathfinding\pathfinding-browser.min.js"></script>
 <script type="text/javascript" src="..\bower_components\heatmap.js-amd\build\heatmap.js"></script>
 <script src="../js/jquery.min.js"></script>
-      
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
         <script src="../js/dashboard.js"></script>
 		<script src="../assets/dist/js/bootstrap.bundle.js"></script>
