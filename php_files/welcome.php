@@ -133,7 +133,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
 				   echo "</tr>";
 			   }
 			   else{
-					echo "<th >Museum Name</th>";
+					echo "<th >Your museums</th>";
 					echo "</thead>";
 					echo "<tbody>";
 				   while($row = mysqli_fetch_array($result))

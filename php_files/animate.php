@@ -11,6 +11,30 @@ $name=$_GET['name'];
 <!doctype html>
 <html lang="en">
   <head>
+  <script>
+	function validateForm() {
+	var path = document.forms["AnimationForm"]["numb"].value;
+	var quantity = document.forms["AnimationForm"]["quantity"].value;
+	var re=new RegExp('^([0-9](,[0-9])*)$');
+  if (path == "" || path == null) {
+    alert("Path must be filled out");
+    return false;
+  }
+  if(!re.test(path)){
+	  alert("Non acceptable pattern. Expecting exhibit_no,exhibit_no,..");
+	  return false;
+  }
+  if (quantity == "" || quantity == null) {
+    alert("Quantity must be filled out");
+    return false;
+  }
+  else if(quantity<1 || quantity>100){
+	alert("Quantity not within acceptable range (1-100)");
+    return false;
+  }
+  return true;
+}
+</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -57,7 +81,7 @@ $name=$_GET['name'];
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" >
-  <a class="navbar-brand">  <span data-feather="user"></span><?php if (isAuthenticated()) { 
+  <a class="navbar-brand" href= "welcome.php">  <span data-feather="user"></span><?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
 					}  ?></a>
  
@@ -78,7 +102,7 @@ $name=$_GET['name'];
   <div id="heatmap_svg" class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
   <svg id="museum"  viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="load('<?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
-					}  ?>','<?php echo $name?>');load_initializer();makeDraggable(evt)"> 
+					}  ?>','<?php echo $name?>');load_initializer()"> 
 		
 			
 	</svg>	
@@ -87,10 +111,10 @@ $name=$_GET['name'];
 </div>
 </div>
 <div class="container" >
-<form class="form-inline">
+<form class="form-inline" name="AnimationForm">
  <div class="form-group">
 		<label for="numb"> Path: </label>
-		<input id="numb">
+		<input id="numb" type="text">
 	</div>
 	 <div class="form-group">
 		<label for="quantity">Quantity (between 1 and 100):</label>
@@ -117,7 +141,7 @@ $name=$_GET['name'];
 			  </label>		
 			</div>
 		</div>
-		<button type="button" onclick='storeData()'>Submit</button>
+		<button type="button" onclick='if(validateForm())storeData()'>Submit</button>
 	</form>
 </div>
 <script  src="../js/func.js"></script>

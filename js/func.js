@@ -25,7 +25,7 @@ var gridBackup;
 var first_time=0;
 var visiting_map;
 var first_time_visitor=0;
-
+var stop_movement_error=false;
 
 var svgNS = "http://www.w3.org/2000/svg"; 
 var xlink= "http://www.w3.org/1999/xlink";
@@ -100,60 +100,6 @@ function createImage(type){
 }
 
 
-//onclick function of the 2nd button(room)
-document.getElementById("btn2").addEventListener("click", createRect);
-
-
-	
-function createRect(){
-	flag=true;
-	
-	if(!buttonPressed){
-		buttonPressed=true;
-		button2Clicked=true;
-		//on mousedown start creating the rectangle
-		museum.addEventListener("mousedown",(event) =>{
-			if(button2Clicked && !button4Clicked){
-				button2Clicked=false;
-				var rect =document.createElementNS(svgNS,"rect");
-				var start= museumPoint(museum,event.clientX,event.clientY);
-				const drawRect= (e) =>{
-					let p= museumPoint(museum,e.clientX,e.clientY);
-					let w =Math.abs(p.x - start.x);
-					let h =Math.abs(p.y - start.y);
-					if(p.x > start.x){
-						p.x=start.x;
-						
-					}
-					if (p.y > start.y) {
-						p.y = start.y;
-					}
-					rect.setAttributeNS(null, 'x', p.x);
-					rect.setAttributeNS(null, 'y', p.y);
-					rect.setAttributeNS(null, 'width', w);
-					rect.setAttributeNS(null, 'height', h);
-					rect.setAttributeNS(null,'stroke','black');
-					rect.setAttributeNS(null,'fill','transparent');
-					rect.setAttribute("class","draggable confine");
-					document.getElementById("museum").appendChild(rect);
-				
-				}
-				//stop drawing when the mouse is up
-				const endDrawRect = (e) => {
-					museum.removeEventListener('mousemove', drawRect);
-					museum.removeEventListener('mouseup', endDrawRect);
-				}
-				museum.addEventListener('mousemove', drawRect);
-				museum.addEventListener('mouseup', endDrawRect);
-				buttonPressed=false;
-			}
-	
-		});
-	}
-	else{
-		alert("You have already pressed a button");
-	}
-}
 
 //onclick function of the 3rd button(big box)
 document.getElementById("btn3").addEventListener("click", function(){
@@ -520,7 +466,12 @@ function createAnimation(array,peopleNum,visitor_category){
 			//console.log(obstacles);
 			if(path==""){
 				path="M ";
-				path+=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
+				var temp_path=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
+				if(temp_path==false){
+					break;
+				}
+				console.log(temp_path);
+				path+=temp_path;
 				path+=" z";
 			}
 			var mpath=document.createElementNS(svgNS,"path");
@@ -547,9 +498,14 @@ function createAnimation(array,peopleNum,visitor_category){
 			ani.appendChild(mpathObj)
 			myImage[i].appendChild(ani);
 			myImage[i].appendChild(anim_end);
-			document.getElementById("museum").appendChild(myImage[i]);
+			//document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
 			//console.log(visiting_map);
+	}
+	if(!stop_movement_error){
+	for(var i=0;i<peopleNum;i++){
+		document.getElementById("museum").appendChild(myImage[i]);
+	}
 	}
 	previous_peopleNum=peopleNum;
 	path_id++;
@@ -817,6 +773,12 @@ function ftiaksepath(array,x,y){
 			//console.log("kiallo path");
 			
 			path1 = finder.findPath((prev_x), (prev_y), point_x, point_y, grid.clone());
+			console.log(path1);
+			if(path1.length==0){
+				alert("Path not found. Possible conflict between exhibit and wall.Head back to load museum in order to fix this");
+				stop_movement_error=true;
+				return false;
+			}
 			//console.log(path1);
 			for(k=0;k<path1.length;k++){
 				//console.log("1");
@@ -912,8 +874,21 @@ function storeData(){
                
                // Now get the value from user and pass it to
                // server script.
-					
+				
                var path = document.getElementById('numb').value;
+			   let temp_array=path.split(',');
+				for(var temp=0; temp<temp_array.length;temp++){
+					console.log(temp_array[temp]);
+					if(temp_array[temp]>numImages){
+						
+						alert("Wrong image number");
+						return;
+					}
+					if(temp_array[temp]==""){
+						alert("Expected format: exhibit_no,exhibit_no,...");
+						return;
+					}
+				}
                var quantity = document.getElementById('quantity').value;
 			   var museum_name=document.getElementById('name').value;
 			   var visitor_category=document.querySelector('input[name="ColorRadios"]:checked').value;

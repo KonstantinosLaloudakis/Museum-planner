@@ -45,7 +45,7 @@
   <label for="birthday" class="sr-only">Birthday:</label>
   <input type="date" name="birthday" class="form-control">
   <label for="email" class="sr-only"><b>Email</b></label>
-  <input type="email" placeholder="Enter Email" name="email" class="form-control" required>
+  <input pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" type="email" placeholder="Enter Email" name="email" class="form-control" required>
   <label for="psw" class="sr-only">Password</label>
   <input type="password" name="psw" class="form-control" placeholder="Password" required>
   <label for="psw-repeat" class="sr-only">Repeat Password</label>

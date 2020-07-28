@@ -104,8 +104,7 @@ die;
         <li> <button class="btn btn-light" id="vertical" onclick="createDoor(this.id)">Vertical</button></li>
 		</ul>
 	</div>
-	<button class="btn btn-light" id="btn123" >Animation</button> 
-	
+
 	</div>
 </div>
   <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">

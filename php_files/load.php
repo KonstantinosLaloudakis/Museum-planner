@@ -58,7 +58,7 @@ $name=$_GET['name'];
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" >
-  <a class="navbar-brand">  <span data-feather="user"></span><?php if (isAuthenticated()) { 
+  <a class="navbar-brand" href="welcome.php">  <span data-feather="user"></span><?php if (isAuthenticated()) { 
 		            echo $_SESSION['name']; 
 					}  ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
