@@ -1,4 +1,5 @@
 <?php
+require 'conn.php';
  session_start();
 	include "database.php";
 if (!(isset($_SESSION['name'])))
@@ -15,14 +16,14 @@ $file=$name.".json";
 $loaded=$_POST["loaded"];
 
 
-$con = mysqli_connect("localhost","root","");
+//$con = mysqli_connect("localhost","root","");
 
-if(! $con)
-{
-    die('Connection Failed'.mysql_error());
-}
+//if(! $con)
+//{
+  //  die('Connection Failed'.mysql_error());
+//}
 
-mysqli_select_db($con,"museumdb");
+//mysqli_select_db($con,"museumdb");
 
 if($loaded=="false"){
 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");

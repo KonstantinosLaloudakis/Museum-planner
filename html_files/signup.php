@@ -1,4 +1,4 @@
-<?php include('process.php'); ?>
+<?php include('../php_files/process.php'); ?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -67,7 +67,7 @@ function validatePassword(){
   <input type="password" name="psw" id="psw" class="form-control" placeholder="Password"  onchange="validatePassword()"required>
   <label for="psw-repeat" class="sr-only">Repeat Password</label>
    <input type="password" placeholder="Repeat Password" class="form-control" name="psw-repeat" id="psw-repeat" onkeyup="validatePassword()" required>
-   <span id='message'></span>
+   
   <div class="row">
   <div class="col">
 		<button class="btn btn-lg btn-primary btn-block" type="signupbtn">Sign up</button>

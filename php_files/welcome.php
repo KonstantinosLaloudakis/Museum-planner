@@ -1,4 +1,5 @@
 <?php
+require 'conn.php';
     session_start();
 	include "database.php";
 if (!(isset($_SESSION['name'])))
@@ -9,12 +10,12 @@ die;
 
 
 $username=$_SESSION['name'];
-	 $con = mysqli_connect("localhost","root","");
+	// $con = mysqli_connect("localhost","root","");
 
-if(! $con)
+/*if(! $con)
 {
     die('Connection Failed'.mysql_error());
-}
+}*/
 
 mysqli_select_db($con,"museumdb");
 	 

@@ -1,17 +1,18 @@
 <?php
+require 'conn.php';
 session_start();
 include "database.php";
 $username = $_POST["username"];
 $password = trim($_POST["pass"]);
 
-$con = mysqli_connect("localhost","root","");
+//$con = mysqli_connect("localhost","root","");
 
-if(! $con)
-{
-    die('Connection Failed'.mysql_error());
-}
+///f(! $con)
+//{
+////    die('Connection Failed'.mysql_error());
+//}
 
-mysqli_select_db($con,"museumdb");
+
 
 $result = mysqli_query($con,"SELECT * FROM users WHERE username = \"$username\" AND password =\"$password\"");
 $count=mysqli_num_rows($result);

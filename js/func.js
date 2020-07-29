@@ -142,7 +142,7 @@ function createLine(){
 						line.setAttributeNS(null, 'y2', p.y);
 						line.setAttributeNS(null,"stroke","black");
 						line.setAttributeNS(null,"id","wall"+numWalls);
-						line.setAttribute("class","draggable confine");
+						line.setAttribute("class","draggable");
 						document.getElementById("museum").appendChild(line);
 						
 					}
@@ -296,7 +296,7 @@ function createDoor(type){
 				if(!aa){
 				line.setAttributeNS(null,"stroke","red");
 				line.setAttributeNS(null,"id","door"+numDoors);
-				line.setAttribute("class","draggable confine");
+				line.setAttribute("class","draggable");
 				document.getElementById("museum").appendChild(line);
 				numDoors++;
 				museum.removeEventListener("click",_listener,true);
@@ -375,10 +375,8 @@ function save_json(museum_name=null,loaded=false){
 			alert(name +" already exists");
 			return;
 		}
-      }
-    });
-	}
-	var museum = document.getElementById("museum");
+		else{
+				var museum = document.getElementById("museum");
 	tempDiv = document.createElement("div");
 	tempDiv=museum.cloneNode(true);
 	var svgText = tempDiv.innerHTML;
@@ -394,6 +392,11 @@ function save_json(museum_name=null,loaded=false){
 	xhr.send(data);
 	//console.log(data);
 	alert(name + " saved successfully!!")
+	
+		}
+      }
+    });
+	}
 	
 	
 	
@@ -555,13 +558,17 @@ function add_image_as_obstacle(){
 	//console.log(img_obstacles[0].getAttributeNS(null,"x"));
 	//console.log(img_obstacles);
 	for(var img=0;img<img_obstacles.length;img++){
-		
+			console.log(img_obstacles[img].transform);
 			var image_x=parseInt(img_obstacles[img].getAttributeNS(null,"x"));
-			transform_x=parseInt(img_obstacles[img].transform.baseVal[0].matrix.e);
-			image_x+=transform_x;
 			var image_y=parseInt(img_obstacles[img].getAttributeNS(null,"y"));
-			transform_y=parseInt(img_obstacles[img].transform.baseVal[0].matrix.f);
-			image_y+=transform_y;
+			if(img_obstacles[img].transform.baseVal.length!=0){
+				transform_x=parseInt(img_obstacles[img].transform.baseVal[0].matrix.e);
+				transform_y=parseInt(img_obstacles[img].transform.baseVal[0].matrix.f);
+				image_x+=transform_x;
+				image_y+=transform_y;
+			
+			}
+			//transform_y=parseInt(img_obstacles[img].transform.baseVal[0].matrix.f);
 			var image_width=parseInt(img_obstacles[img].getAttributeNS(null,"width"));
 			var image_height=parseInt(img_obstacles[img].getAttributeNS(null,"height"));
 			for( var j=image_x; j<image_x+image_width;j++) {
@@ -758,14 +765,17 @@ function ftiaksepath(array,x,y){
 			}
 					
 			point_x=parseInt(img[array[i]-1].getAttributeNS(null,"x"));
-			transform_x=parseInt(img[array[i]-1].transform.baseVal[0].matrix.e);
-			point_x+=transform_x;
-			//console.log("To x einai"+point_x);
-			
 			point_y=parseInt(img[array[i]-1].getAttributeNS(null,"y"));
-			transform_y=parseInt(img[array[i]-1].transform.baseVal[0].matrix.f);
-			point_y+=transform_y;
 			
+			if(img[array[i]-1].transform.baseVal.length!=0){
+			
+				transform_x=parseInt(img[array[i]-1].transform.baseVal[0].matrix.e);
+				point_x+=transform_x;
+				//console.log("To x einai"+point_x);
+				transform_y=parseInt(img[array[i]-1].transform.baseVal[0].matrix.f);
+				point_y+=transform_y;
+				
+			}
 			//console.log("To y einai"+ point_y);
 			
 			//console.log((prev_y)+"," +(prev_x)+", "+point_x+", "+point_y);
@@ -1024,12 +1034,12 @@ function makeDraggable(evt) {
 		if (evt.target.classList.contains('draggable')) {
 			selectedElement = evt.target;
 			offset = getMousePosition(evt);
-			console.log(selectedElement.transform.baseVal[0].matrix.e);
+			//console.log(selectedElement.transform.baseVal[0].matrix.e);
    
 			var transforms = selectedElement.transform.baseVal;
 			console.log(transforms);
 			// Ensure the first transform is a translate transform
-			if (transforms.length === 0 || transforms.numberOfItems === 0 ||transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+			if (transforms.length === 0  ||transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
 				// Create an transform that translates by (0, 0)
 				var translate = svg.createSVGTransform();
 				translate.setTranslate(0, 0);
