@@ -2,31 +2,33 @@ var selectedElement,offset, transform,confined;
 var button2Clicked=false;
 var button4Clicked=false;
 var button5Clicked=false;
-var flag=false;
+var flag=false;//if a polyline is appended to viewbox flag becomes true
 var objects=[];
 var jsonString;
 var tempDiv=null;
 var buttonPressed=false;
-var box=true;
+var box=true;//used to detect if there is only one polyline
 var numImages=0;
 var doorcoords;
 var previous_peopleNum=0;
 var path_id=0;
+//boundaries are used for the confine class, in order to prevent exhibits of leaving the museum or hit the walls
 var boundaryX1 = 7;
 var boundaryX2 = 95;
 var boundaryY1 = 7;
 var boundaryY2 = 45;
+
 const museum = document.querySelector("#museum");
-var numDoors=0;
+var numDoors=0;//logika den xreiazetai
 var numWalls=0;
 var obstacles;
 var grid;
 var gridBackup;
-var first_time=0;
+var first_time=0;//used in CreateAnimation function, initializes the time of animation when the first person enters the museum
 var visiting_map;
-var first_time_visitor=0;
-var stop_movement_error=false;
-
+var first_time_visitor=0;//used in CreateAnimation function, in order to initialize obstacles only once
+var stop_movement_error=false;//used to detect if there was an error with the animation
+var door_flag=false;//used to detect if there is already a door in the museum
 var svgNS = "http://www.w3.org/2000/svg"; 
 var xlink= "http://www.w3.org/1999/xlink";
 
@@ -40,7 +42,7 @@ const museumPoint = (elem, x, y) => {
   return p.matrixTransform(elem.getScreenCTM().inverse());
 }
 
-
+//initialize obstacles and visiting map arrays
 function create_obstacles_array(){
 	obstacles=new Array(50);
 	visiting_map=new Array(50);
@@ -56,7 +58,6 @@ function create_obstacles_array(){
 }
 //onclick function of the 1st button (image)
 //type determines the size of the image
-
 function createImage(type){
 	if(flag){
 		museum.addEventListener("click",function _listener(event){
@@ -95,7 +96,7 @@ function createImage(type){
 		},true);
 	}
 	else{
-		alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
+		alert("You haven't create a museum yet. Press the big box button in order to continue.");
 	}
 }
 
@@ -165,7 +166,7 @@ function createLine(){
 		numWalls++;
 	}
 	else{
-			alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
+			alert("You haven't create a museum yet. Press the big box button in order to continue.");
 	}
 
 }
@@ -182,12 +183,15 @@ function removeObject(){
 						box=true;
 						flag=false;
 				}
+				else if(selectedElement.getAttributeNS(null,"id")=="door"){
+					door_flag=false;
+				}
 				var object = selectedElement;
 				var parent = object.parentNode;
 				parent.removeChild(object);
 			}
 			else{
-				alert("Ρε την παλεύεις; Πας να διαγράψεις κατι που δεν υπάρχει!");
+				alert("You can't delete this!");
 			}
 			museum.removeEventListener("click",_listener,true);
 	
@@ -200,7 +204,7 @@ function removeObject(){
 }
 
 
-//save all the current objects
+//save all the current objects (παιζει να μην χρειαζεται αυτο)
 function save(){
 	
 	//delete all previous saved objects
@@ -248,11 +252,12 @@ function FindTotalImages(){
 }
 
 
-//onclick function of the door button
+//onclick function of the door button. Creates a red door type is used to determine the direction of the door 
 function createDoor(type){
 	if(flag){
 		if(!buttonPressed){
-			let aa=true;
+			if(!door_flag){
+			let acceptable_door=true;  
 			buttonPressed=true;
 			museum.addEventListener("click",function _listener(event){
 			
@@ -271,7 +276,7 @@ function createDoor(type){
 					line.setAttributeNS(null, 'y1', start.y);
 					line.setAttributeNS(null, 'x2', start.x+5);
 					line.setAttributeNS(null, 'y2', start.y);
-					aa=false;
+					acceptable_door=false;
 					}
 					else{
 						alert("Only vertical doors here");
@@ -284,36 +289,35 @@ function createDoor(type){
 					line.setAttributeNS(null, 'y1', start.y-5);
 					line.setAttributeNS(null, 'x2', start.x);
 					line.setAttributeNS(null, 'y2', start.y+5);
-					aa=false;
+					acceptable_door=false;
 					}
 					else{
 						alert("Only horizontal doors here");
 					}
 				}
 				else{
-					alert("ΣΤΑΜΑΤΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑΑ");
+					alert("Unexpected error! Door type is NOT established!");
 				}
-				if(!aa){
+				if(!acceptable_door){
 				line.setAttributeNS(null,"stroke","red");
-				line.setAttributeNS(null,"id","door"+numDoors);
+				line.setAttributeNS(null,"id","door");
 				line.setAttribute("class","draggable");
 				document.getElementById("museum").appendChild(line);
-				numDoors++;
+				door_flag=true;
+				
 				museum.removeEventListener("click",_listener,true);
 					
 				
 				buttonPressed=false;
 				}
 				}
-				
-				else{
-					//console.log(checkCoords(start.x,start.y));
-					//console.log("3");
-					alert("Kopsou paidaki");
-				}
 					
 				
 			},true);
+			}
+			else{
+				alert("Only one door is acceptable");
+			}
 		}
 		else{
 			alert("You have already pressed a button");
@@ -321,26 +325,27 @@ function createDoor(type){
 		
 	}
 	else{
-		alert("Ρε την παλεύεις; Πως θα βάλεις εκθέματα χωρίς να έχεις μουσείο;");
+		alert("You haven't create a museum yet. Press the big box button in order to continue.");
 	}
 }
-//check if this set of coords belongs to a rect(room) or polyline(museum)
+//check if this set of coords belongs to a polyline(museum)
 function checkCoords(x,y){
 	var returnVal=false;
 	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
-	var rects=museum.getElementsByTagNameNS(svgNS,"rect");
+	//var rects=museum.getElementsByTagNameNS(svgNS,"rect");
 	let point = museum.createSVGPoint();
 	point.x=x;
 	point.y=y;
 	//console.log(rects);
-	for(i=0;i<rects.length;i++){
+	/*for(i=0;i<rects.length;i++){
 		returnVal=returnVal || rects[i].isPointInStroke(point);
-	}
+	}*/
 	returnVal=returnVal || element[0].isPointInStroke(point);
 	return returnVal;
 	
 }
-//save all the elements inside the viewbox in a json file
+//save all the elements inside the viewbox into a json file
+//loaded flag is used to determine if the user has already saved the museum once
 function save_json(museum_name=null,loaded=false){
 	
 	if(!museum_name){
@@ -376,23 +381,21 @@ function save_json(museum_name=null,loaded=false){
 			return;
 		}
 		else{
-				var museum = document.getElementById("museum");
-	tempDiv = document.createElement("div");
-	tempDiv=museum.cloneNode(true);
-	var svgText = tempDiv.innerHTML;
-	jsonString = JSON.stringify(svgText);
-	console.log(museum);
-	var xhr = new XMLHttpRequest();
-	
+			var museum = document.getElementById("museum");
+			tempDiv = document.createElement("div");
+			tempDiv=museum.cloneNode(true);
+			var svgText = tempDiv.innerHTML;
+			jsonString = JSON.stringify(svgText);
+			console.log(museum);
+			var xhr = new XMLHttpRequest();
+				
+			xhr.open("POST","save_json.php",true);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var data=''+ "json=" + jsonString + "&name="+name +"&loaded=" + loaded;
+			xhr.send(data);
+			//console.log(data);
+			alert(name + " saved successfully!!")
 
-		
-	xhr.open("POST","save_json.php",true);
-	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	var data=''+ "json=" + jsonString + "&name="+name +"&loaded=" + loaded;
-	xhr.send(data);
-	//console.log(data);
-	alert(name + " saved successfully!!")
-	
 		}
       }
     });
@@ -402,7 +405,7 @@ function save_json(museum_name=null,loaded=false){
 	
 }
 
-
+//called only via load.php
 function load_initializer(){
 	flag=true;
 	box=false;
@@ -429,7 +432,8 @@ function createAnimation(array,peopleNum,visitor_category){
 		svg.setCurrentTime(0);
 		time=0;
 	}
-	first_time=1;	
+	first_time=1;
+		//create people objects(shown as circles)
 	for( var i=0;i<peopleNum;i++){
 			myImage[i] = document.createElementNS(svgNS,"circle");
 			//myImage[i].setAttributeNS(null,"height","10%");
@@ -464,7 +468,7 @@ function createAnimation(array,peopleNum,visitor_category){
 				initialize_obstacles();
 				first_time_visitor=1;
 			}
-			
+			//create new grid for pathfinding.js algorithms
 			grid=new PF.Grid(100,50,obstacles);
 			//console.log(obstacles);
 			if(path==""){
@@ -477,17 +481,19 @@ function createAnimation(array,peopleNum,visitor_category){
 				path+=temp_path;
 				path+=" z";
 			}
+			//create path of movement animation
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
 			mpath.setAttributeNS(null,"fill","none");
 			mpath.setAttributeNS(null,"id","theMotionPath"+path_id+ visitor_category);
-			
+
+			//create movement animation
 			var ani = document.createElementNS(svgNS,"animateMotion");
 			ani.setAttributeNS(null,"dur", "30s");
 			ani.setAttributeNS(null,"repeatCount", "1");
 			ani.setAttributeNS(null,"begin",(i+time)+'s');
 			
-			
+			//create the fade out animation, when the user exits the museum, after he finishes his movement
 			var anim_end=document.createElementNS(svgNS,"animate");
 			anim_end.setAttributeNS(null,"attributeName","opacity");
 			anim_end.setAttributeNS(null,"dur","1");
@@ -505,6 +511,7 @@ function createAnimation(array,peopleNum,visitor_category){
 			document.getElementById("museum").appendChild(mpath);
 			//console.log(visiting_map);
 	}
+	//if there wasn't an error append objects in viewbox
 	if(!stop_movement_error){
 	for(var i=0;i<peopleNum;i++){
 		document.getElementById("museum").appendChild(myImage[i]);
@@ -515,7 +522,8 @@ function createAnimation(array,peopleNum,visitor_category){
 	
 	
 }
-
+//mark the polyline and the walls as obstacles
+//1 defines an obstacle and 0 a free space
 function initialize_obstacles(){
 	create_obstacles_array();
 	var walls=[];
@@ -553,6 +561,7 @@ function initialize_obstacles(){
 	
 	
 }
+//marks the acreage of an exhibit as an obstacle(not-walkable). It only excludes it's top left corner
 function add_image_as_obstacle(){
 	var img_obstacles=museum.getElementsByTagNameNS(svgNS,"image");
 	//console.log(img_obstacles[0].getAttributeNS(null,"x"));
@@ -582,6 +591,8 @@ function add_image_as_obstacle(){
 	}
 	
 }
+//make a specific line as obstacle.
+//If it's a polyline find where the door is located and mark it as walkable space(in obstacles array)
 function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	var temp;
 	if(x1>x2){
@@ -649,7 +660,7 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	
 	
 }
-//this function deletes persons, who have already finished their animation
+//this function deletes persons, who have already finished their animation (must be deleted)
 function removePeople(){
 	var objects=museum.getElementsByTagNameNS(svgNS,"circle");
 	//console.log(objects.length);
@@ -662,7 +673,7 @@ function removePeople(){
 	}
 	
 }
-//this function creates the specific path for each animation
+//this function creates the specific path for each animation(Must be deleted)
 function createPath(x,y,array){
 	var point=museum.createSVGPoint();
 	var path=" ";
@@ -712,6 +723,7 @@ function createPath(x,y,array){
 	return path;
 }
 
+// in this function we create the animation path of an object (with pathfinding.js)
 function ftiaksepath(array,x,y){
 	var return_path="";
 	var random_num;
@@ -766,7 +778,7 @@ function ftiaksepath(array,x,y){
 					
 			point_x=parseInt(img[array[i]-1].getAttributeNS(null,"x"));
 			point_y=parseInt(img[array[i]-1].getAttributeNS(null,"y"));
-			
+			//if this image has changed position(e.g. has been dragged by the user in a different position)
 			if(img[array[i]-1].transform.baseVal.length!=0){
 			
 				transform_x=parseInt(img[array[i]-1].transform.baseVal[0].matrix.e);
@@ -810,7 +822,7 @@ function ftiaksepath(array,x,y){
 			}
 		return return_path;
 }
-
+// MUST BE DELETED
 function check_for_obstacles(x,y,offset_x,offset_y){
 	//console.log((x+offset_x)+","+(y+offset_y));
 	if(obstacles[y+offset_y][x+offset_x]==1){
@@ -913,10 +925,11 @@ function storeData(){
 
 
 //document.getElementById("heatmap").addEventListener("click", createHeatmap);
-
+//heatmap.js
+// creates a heatmap based on all previous people movements  
 function createHeatmap(){
 	var max=0;
-	var config= {
+	var config= {//heatmap instance configuration
 		container: document.getElementById("heatmap_svg"),
 		radius: 36.6,
 		maxOpacity: 1,
@@ -926,7 +939,7 @@ function createHeatmap(){
 		gradient: { 0.25: "rgb(0,0,255)", 0.55: "rgb(0,255,0)", 0.85: "yellow", 1.0: "rgb(255,0,0)"}
   			
 	};
-	
+	//find width and height of newly created div(heatmap_svg)
 	var heatmapInstance=h337.create(config);
 	var x=document.getElementById("heatmap_svg");
 	var div_x=x.offsetWidth;
@@ -936,7 +949,7 @@ function createHeatmap(){
 	//console.log(y);
 	
 	
-	
+	//find the difference in height and width between the heatmap_svg div and the viewbox
 	var data_x=div_x-y.clientWidth;
 	var data_y=div_y-y.clientHeight;
 	//console.log("oooo"+data_x+", "+ data_y);
@@ -947,12 +960,13 @@ function createHeatmap(){
 	//console.log(pol_points[0].x+",,,"+pol_points[0].y);
 	var mp=museumPoint(museum,pol_points[0].x,pol_points[0].y);
 	//console.log(mp.x+"..."+mp.y);
+	//find number of pixels that each viewbox element represents
 	var a_x=y.clientWidth/100;
 	var a_y=y.clientHeight/50;
 	//console.log("iiiiiii"+a_x+", "+a_y);
 	//console.log("aaaaa"+(data_x+(3*a_x))+", "+(data_y+(3*a_y)));
-	heatmapInstance.setDataMax(2);
-	heatmapInstance.setDataMin(0);
+	//heatmapInstance.setDataMax(2);
+	//heatmapInstance.setDataMin(0);
 	var datapoints=[];
 	for(var i=0;i<50;i++){
 		for(var j=0;j<100;j++){
@@ -985,9 +999,9 @@ function createHeatmap(){
 	
 	
 }
-
+//save created heatmap and museum in your local storage
 function save_heatmap(){
-var name = prompt("Please enter a name for the file:", "Sergio Araujo");
+var name = prompt("Please enter a name for the file:", "Museum_heatmap");
   if (name == null || name == "") {
     alert("User cancelled the prompt.");
   } else {
