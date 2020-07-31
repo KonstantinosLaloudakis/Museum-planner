@@ -2,7 +2,7 @@ var selectedElement,offset, transform,confined;
 var button2Clicked=false;
 var button4Clicked=false;
 var button5Clicked=false;
-var flag=false;//if a polyline is appended to viewbox flag becomes true
+var polyline_flag=false;//if a polyline is appended to viewbox flag becomes true
 var objects=[];
 var jsonString;
 var tempDiv=null;
@@ -59,7 +59,7 @@ function create_obstacles_array(){
 //onclick function of the 1st button (image)
 //type determines the size of the image
 function createImage(type){
-	if(flag){
+	if(polyline_flag){
 		museum.addEventListener("click",function _listener(event){
 			var myImage = document.createElementNS(svgNS,"image");
 			var start= museumPoint(museum,event.clientX,event.clientY);
@@ -106,7 +106,7 @@ function createImage(type){
 document.getElementById("btn3").addEventListener("click", function(){
 	if(box){
 		box=false;
-		flag=true;
+		polyline_flag=true;
 		var myPolyline = document.createElementNS(svgNS,"polyline"); 
 		myPolyline.setAttributeNS(null,"points","3,3 3,47 97,47 97,3 3,3");
 		myPolyline.setAttributeNS(null,"fill","transparent");
@@ -122,7 +122,7 @@ document.getElementById("btn3").addEventListener("click", function(){
 document.getElementById("btn4").addEventListener("click", createLine);
 
 function createLine(){
-	if(flag){
+	if(polyline_flag){
 		
 		if(!buttonPressed){
 			buttonPressed=true;
@@ -181,7 +181,7 @@ function removeObject(){
 			if(selectedElement!=document.getElementById("museum")){
 				if(selectedElement.tagName.toLowerCase()=="polyline"){
 						box=true;
-						flag=false;
+						polyline_flag=false;
 				}
 				else if(selectedElement.getAttributeNS(null,"id")=="door"){
 					door_flag=false;
@@ -254,7 +254,7 @@ function FindTotalImages(){
 
 //onclick function of the door button. Creates a red door type is used to determine the direction of the door 
 function createDoor(type){
-	if(flag){
+	if(polyline_flag){
 		if(!buttonPressed){
 			if(!door_flag){
 			let acceptable_door=true;  
@@ -348,6 +348,14 @@ function checkCoords(x,y){
 //loaded flag is used to determine if the user has already saved the museum once
 function save_json(museum_name=null,loaded=false){
 	
+	if(numImages==0){
+		alert("You must have at least 1 exhibit in order to save a museum");
+		return;
+	}
+	if(!door_flag){
+		alert("You must have a door in order to save the museum");
+		return;
+	}
 	if(!museum_name){
 		var name=prompt("Please enter the file name","museum");
 		while(name==""){
@@ -407,7 +415,7 @@ function save_json(museum_name=null,loaded=false){
 
 //called only via load.php
 function load_initializer(){
-	flag=true;
+	polyline_flag=true;
 	box=false;
 	
 }
@@ -473,7 +481,7 @@ function createAnimation(array,peopleNum,visitor_category){
 			//console.log(obstacles);
 			if(path==""){
 				path="M ";
-				var temp_path=ftiaksepath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
+				var temp_path=Createpath(array,parseInt(myImage[i].getAttributeNS(null,"cx")),parseInt(myImage[i].getAttributeNS(null,"cy")));
 				if(temp_path==false){
 					break;
 				}
@@ -582,7 +590,7 @@ function add_image_as_obstacle(){
 			var image_height=parseInt(img_obstacles[img].getAttributeNS(null,"height"));
 			for( var j=image_x; j<image_x+image_width;j++) {
 					for( var k=image_y; k<image_y+image_height;k++){
-						
+						console.log(k+","+j);
 						obstacles[k][j]=1;
 						
 					}
@@ -724,7 +732,7 @@ function createPath(x,y,array){
 }
 
 // in this function we create the animation path of an object (with pathfinding.js)
-function ftiaksepath(array,x,y){
+function Createpath(array,x,y){
 	var return_path="";
 	var random_num;
 	var finder;
@@ -1005,11 +1013,7 @@ var name = prompt("Please enter a name for the file:", "Museum_heatmap");
   if (name == null || name == "") {
     alert("User cancelled the prompt.");
   } else {
-    alert("Download file to local storage");
-  }
-  
-
-	var node = document.getElementById('heatmap_svg');
+	  var node = document.getElementById('heatmap_svg');
 
 domtoimage.toPng(node)
     .then(function (dataUrl) {
@@ -1025,6 +1029,11 @@ domtoimage.toPng(node)
     .catch(function (error) {
         console.error('oops, something went wrong!', error);
     });
+    alert("Download file to local storage");
+  }
+  
+
+	
 }
 
 //------------------------------------------------

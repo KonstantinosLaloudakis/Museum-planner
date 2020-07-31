@@ -15,7 +15,7 @@ $name=$_GET['name'];
 	function validateForm() {
 	var path = document.forms["AnimationForm"]["numb"].value;
 	var quantity = document.forms["AnimationForm"]["quantity"].value;
-	var re=new RegExp('^([0-9](,[0-9])*)$');
+	var re=new RegExp('^([0-9]{1,2}(,[0-9]{1,2})*)$');
   if (path == "" || path == null) {
     alert("Path must be filled out");
     return false;
