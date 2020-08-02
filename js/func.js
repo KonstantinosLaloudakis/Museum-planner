@@ -28,7 +28,8 @@ var first_time=0;//used in CreateAnimation function, initializes the time of ani
 var visiting_map;
 var first_time_visitor=0;//used in CreateAnimation function, in order to initialize obstacles only once
 var stop_movement_error=false;//used to detect if there was an error with the animation
-var door_flag=false;//used to detect if there is already a door in the museum
+var door_flag_entrance=false;//used to detect if there is already a door in the museum
+var door_flag_exit=false;//used to detect if there is already a door in the museum
 var svgNS = "http://www.w3.org/2000/svg"; 
 var xlink= "http://www.w3.org/1999/xlink";
 
@@ -184,11 +185,30 @@ function removeObject(){
 						polyline_flag=false;
 				}
 				else if(selectedElement.getAttributeNS(null,"id")=="door"){
-					door_flag=false;
+					if(selectedElement.firstChild.textContent=="Entrance/Exit"){
+						door_flag_entrance=false;
+						door_flag_exit=false;
+					}
+					else if(selectedElement.firstChild.textContent=="Entrance"){
+						door_flag_entrance=false;
+					}
+					else if(selectedElement.firstChild.textContent=="Exit"){
+						door_flag_exit=false;
+					}
+					
+					
 				}
 				var object = selectedElement;
 				var parent = object.parentNode;
 				parent.removeChild(object);
+				
+				if(selectedElement.tagName.toLowerCase()=="image"){
+					var images=document.getElementsByTagNameNS(svgNS,"image");
+					numImages=images.length;
+					for(var i=0;i<images.length;i++){
+						images[i].firstChild.textContent="Exhibit"+(i+1);
+					}
+				}
 			}
 			else{
 				alert("You can't delete this!");
@@ -256,7 +276,7 @@ function FindTotalImages(){
 function createDoor(type){
 	if(polyline_flag){
 		if(!buttonPressed){
-			if(!door_flag){
+			if(!door_flag_entrance || !door_flag_exit ){
 			let acceptable_door=true;  
 			buttonPressed=true;
 			museum.addEventListener("click",function _listener(event){
@@ -299,12 +319,23 @@ function createDoor(type){
 					alert("Unexpected error! Door type is NOT established!");
 				}
 				if(!acceptable_door){
+				var title=document.createElementNS(svgNS,"title");
+				if(!door_flag_entrance){
+					door_flag_entrance=true;
+					var titletext  = document.createTextNode("Entrance");
+				}
+				else{
+					door_flag_exit=true;
+					var titletext  = document.createTextNode("Exit");
+				
+				}
+				title.appendChild(titletext);
+				line.appendChild(title);
 				line.setAttributeNS(null,"stroke","red");
 				line.setAttributeNS(null,"id","door");
 				line.setAttribute("class","draggable");
 				document.getElementById("museum").appendChild(line);
-				door_flag=true;
-				
+				console.log(museum);
 				museum.removeEventListener("click",_listener,true);
 					
 				
@@ -316,7 +347,7 @@ function createDoor(type){
 			},true);
 			}
 			else{
-				alert("Only one door is acceptable");
+				alert("2 doors are allowed at maximum");
 			}
 		}
 		else{
@@ -352,9 +383,18 @@ function save_json(museum_name=null,loaded=false){
 		alert("You must have at least 1 exhibit in order to save a museum");
 		return;
 	}
-	if(!door_flag){
-		alert("You must have a door in order to save the museum");
+	if(!door_flag_entrance){
+		alert("You must have at least 1 door in order to save the museum(Entrance/Exit Or 1 Entrance And One Exit)");
 		return;
+	}
+	else{
+		if(!door_flag_exit){
+			var element=document.getElementById("door");
+			console.log(element);
+			element.firstChild.textContent="Entrance/Exit";
+			
+			//element.setAttributeNS("")
+		}
 	}
 	if(!museum_name){
 		var name=prompt("Please enter the file name","museum");
@@ -417,6 +457,8 @@ function save_json(museum_name=null,loaded=false){
 function load_initializer(){
 	polyline_flag=true;
 	box=false;
+	door_flag_entrance=true;
+	door_flag_exit=true;
 	
 }
 
@@ -485,10 +527,15 @@ function createAnimation(array,peopleNum,visitor_category){
 				if(temp_path==false){
 					break;
 				}
+				console.log(obstacles);
 				console.log(temp_path);
 				path+=temp_path;
-				path+=" z";
+				var end=findDoor(true);
+				
+				//path+=" z";
 			}
+			var end=findDoor(true);
+
 			//create path of movement animation
 			var mpath=document.createElementNS(svgNS,"path");
 			mpath.setAttributeNS(null,"d",path);
@@ -505,16 +552,22 @@ function createAnimation(array,peopleNum,visitor_category){
 			var anim_end=document.createElementNS(svgNS,"animate");
 			anim_end.setAttributeNS(null,"attributeName","opacity");
 			anim_end.setAttributeNS(null,"dur","1");
-			anim_end.setAttributeNS(null,"begin",(i+time+30)+'s');
+			anim_end.setAttributeNS(null,"begin",(i+time+29)+'s');
 			anim_end.setAttributeNS(null,"fill","freeze");
 			anim_end.setAttributeNS(null,"from","1");
 			anim_end.setAttributeNS(null,"to","0");
 			anim_end.setAttributeNS(null,"repeatCount","0");
+			
+			
+			
+			
 			var mpathObj=document.createElementNS(svgNS,"mpath");
 			mpathObj.setAttribute("href","#theMotionPath"+path_id+ visitor_category);
-			ani.appendChild(mpathObj)
+			ani.appendChild(mpathObj);
+			
 			myImage[i].appendChild(ani);
 			myImage[i].appendChild(anim_end);
+			
 			//document.getElementById("museum").appendChild(myImage[i]);
 			document.getElementById("museum").appendChild(mpath);
 			//console.log(visiting_map);
@@ -548,6 +601,7 @@ function initialize_obstacles(){
 			door.push(walls_and_door[i]);
 		}
 	}
+	console.log(door);
 	//console.log(walls);
 	for(var i in walls){
 		var x1=parseInt(walls[i].getAttributeNS(null,"x1"));
@@ -561,6 +615,7 @@ function initialize_obstacles(){
 	for(var k=0;k<points.length-1;k++){
 		//console.log(points[k+1].x);
 		add_obstacle(points[k].x,points[k].y,points[k+1].x,points[k+1].y,door,true);
+		
 	}
 	
 	add_image_as_obstacle();
@@ -590,7 +645,7 @@ function add_image_as_obstacle(){
 			var image_height=parseInt(img_obstacles[img].getAttributeNS(null,"height"));
 			for( var j=image_x; j<image_x+image_width;j++) {
 					for( var k=image_y; k<image_y+image_height;k++){
-						console.log(k+","+j);
+						//console.log(k+","+j);
 						obstacles[k][j]=1;
 						
 					}
@@ -621,11 +676,13 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 	
 	}
 	if(polyline){
-		//console.log(door);
-		var x1=parseInt(door[0].getAttributeNS(null,"x1"));
-		var x2=parseInt(door[0].getAttributeNS(null,"x2"));
-		var y1=parseInt(door[0].getAttributeNS(null,"y1"));
-		var y2=parseInt(door[0].getAttributeNS(null,"y2"));
+		console.log(door);
+		for(var dor=0;dor<door.length;dor++){
+		console.log(door[dor]);
+		var x1=parseInt(door[dor].getAttributeNS(null,"x1"));
+		var x2=parseInt(door[dor].getAttributeNS(null,"x2"));
+		var y1=parseInt(door[dor].getAttributeNS(null,"y1"));
+		var y2=parseInt(door[dor].getAttributeNS(null,"y2"));
 		if(x1==x2){
 			if(x1<10){
 				for(var j=y1;j<=y2;j++){
@@ -662,73 +719,13 @@ function add_obstacle(x1,y1,x2,y2,door,polyline=false){
 				}
 			}
 			
+			}
 		}
 		
 	}
+	console.log(obstacles);
 	
 	
-}
-//this function deletes persons, who have already finished their animation (must be deleted)
-function removePeople(){
-	var objects=museum.getElementsByTagNameNS(svgNS,"circle");
-	//console.log(objects.length);
-	for(var object=0;object<objects.length;){
-		//console.log("11111111111111111"+" "+object);
-		var person=objects[0];
-		//console.log(person);
-		var parent=person.parentNode;
-		parent.removeChild(person);
-	}
-	
-}
-//this function creates the specific path for each animation(Must be deleted)
-function createPath(x,y,array){
-	var point=museum.createSVGPoint();
-	var path=" ";
-	var prev_x=0;
-	var prev_y=0;
-	var img=museum.getElementsByTagNameNS(svgNS,"image");
-		for(var i in array){
-			if(array[i]==",")
-				continue;
-			
-			
-			point.x=parseInt(img[array[i]-1].getAttributeNS(null,"cx"));
-			point.x-=x;
-			point.x=Math.floor(point.x);
-			point.y=parseInt(img[array[i]-1].getAttributeNS(null,"cy"));
-			point.y-=y;
-			point.y=Math.floor(point.y);
-			while(1){
-				if(prev_x==point.x && prev_y==point.y){
-					break;
-				}
-				if(prev_x<point.x){
-					prev_x++;
-				}
-				else if(prev_x>point.x){
-					prev_x--;
-				}
-				
-				if(prev_y<point.y){
-					prev_y++
-				}
-				else if(prev_y>point.y){
-					prev_y--;
-				}
-				
-				
-				path+=check_for_obstacles(prev_x,prev_y,x,y); 
-				
-				//console.log(path);
-			}
-			//console.log("kati");
-			path+=point.x +',' + point.y +" ";
-			prev_x=point.x;
-			prev_y=point.y;
-		
-	}
-	return path;
 }
 
 // in this function we create the animation path of an object (with pathfinding.js)
@@ -743,6 +740,7 @@ function Createpath(array,x,y){
 	var prev_y=y;
 	var home_x=prev_x;
 	var home_y=prev_y;
+	var end;
 	//console.log(museum);
 	var img=museum.getElementsByTagNameNS(svgNS,"image");
 	console.log(img);
@@ -821,7 +819,11 @@ function Createpath(array,x,y){
 			//console.log("/////"+i+"//"+prev_x+","+prev_y);
 			grid=gridBackup;
 		}
-		path1 = finder.findPath((prev_x), (prev_y), home_x, home_y, grid.clone());
+		end=findDoor(true);
+		console.log(parseInt(end.x)+",,"+parseInt(end.y));
+		console.log(museum);
+		path1 = finder.findPath((prev_x), (prev_y), parseInt(end.x), parseInt(end.y), grid.clone());
+		console.log(path1);
 			//console.log(path1);
 			for(k=0;k<path1.length;k++){
 				visiting_map[path1[k][1]][path1[k][0]]+=1;
@@ -844,7 +846,7 @@ function check_for_obstacles(x,y,offset_x,offset_y){
 }
 
 //with this function we can find the door coordinates, so that people can start their animation from there
-function findDoor(){
+function findDoor(end=false){
 	var point = museum.createSVGPoint();
 	var doors=[];
 	var element=museum.getElementsByTagNameNS(svgNS,"polyline");
@@ -852,7 +854,17 @@ function findDoor(){
 	for(i=0;i<doors_and_walls.length;i++){
 		var id=doors_and_walls[i].getAttributeNS(null,"id");
 		if(id.includes("door")){
-			doors.push(doors_and_walls[i]);
+			if(!end){
+				console.log(doors_and_walls[i].textContent);
+				if(doors_and_walls[i].textContent=="Entrance/Exit" || doors_and_walls[i].textContent=="Entrance"){
+					doors.push(doors_and_walls[i]);
+				}
+			}
+			else{
+				if(doors_and_walls[i].textContent=="Entrance/Exit" || doors_and_walls[i].textContent=="Exit"){
+					doors.push(doors_and_walls[i]);
+				}
+			}
 		}
 			
 	}
@@ -869,6 +881,7 @@ function findDoor(){
 			else if(point.x===point.x2){
 				point.y+=5;
 			}
+			console.log(point);
 			return point; 
 		}
 	}
