@@ -17,7 +17,7 @@ $username=$_SESSION['name'];
     die('Connection Failed'.mysql_error());
 }*/
 
-mysqli_select_db($con,"museumdb");
+//mysqli_select_db($con,"museumdb");
 	 
 	 $id_query = mysqli_query($con,"SELECT user_id FROM users WHERE username = \"$username\"");
 $id=mysqli_fetch_row($id_query);

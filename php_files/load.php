@@ -95,8 +95,6 @@ $name=$_GET['name'];
 		<li> <button class="btn btn-light" id="large" onclick="createImage(this.id)"> Large</button></li></li>
 		</ul>
 	</div>
-     
-	 <button class="btn btn-light" id="btn2"  >ΔΩΜΑΤΙΟ</button> 
 	 <button class="btn btn-light" id="btn3"  >ΜΕΓΑΛΟΣ ΤΟΙΧΟΣ</button> 
 	 <button class="btn btn-light" id="btn4" >ΤΟΙΧΟΣ</button> 
 	 <div class="btn-group dropright">

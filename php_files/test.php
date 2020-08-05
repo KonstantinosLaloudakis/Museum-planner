@@ -1,6 +1,7 @@
 <?php
  session_start();
-	include "database.php";
+ require 'conn.php';
+include "database.php";
 if (!(isset($_SESSION['name'])))
 {
 header ("location: ../index.html");

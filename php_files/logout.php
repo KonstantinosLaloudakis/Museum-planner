@@ -1,5 +1,6 @@
 <?php
     session_start();
+	require 'conn.php';
 	session_destroy();
 	unset($_SESSION['isAuthenticated']);
 	unset ($_SESSION['name']);
