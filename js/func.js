@@ -291,7 +291,7 @@ function createDoor(type){
 						
 					//console.log("2");
 				if(type=="horizontal"){
-					if(checkCoords(start.x-5,start.y) &&  checkCoords(start.x-5,start.y)){
+					if(checkCoords(start.x-5,start.y) &&  checkCoords(start.x+5,start.y)){
 					line.setAttributeNS(null, 'x1', start.x-5);
 					line.setAttributeNS(null, 'y1', start.y);
 					line.setAttributeNS(null, 'x2', start.x+5);
@@ -299,12 +299,12 @@ function createDoor(type){
 					acceptable_door=false;
 					}
 					else{
-						alert("Only vertical doors here");
+						alert("You can't create a horizontal door here");
 						
 					}
 				}	
 				else if(type=="vertical"){
-					if(checkCoords(start.x,start.y-5) &&  checkCoords(start.x,start.y-5)){
+					if(checkCoords(start.x,start.y-5) &&  checkCoords(start.x,start.y+5)){
 					line.setAttributeNS(null, 'x1', start.x);
 					line.setAttributeNS(null, 'y1', start.y-5);
 					line.setAttributeNS(null, 'x2', start.x);
@@ -312,7 +312,7 @@ function createDoor(type){
 					acceptable_door=false;
 					}
 					else{
-						alert("Only horizontal doors here");
+						alert("You can't create a vertical door here");
 					}
 				}
 				else{
@@ -333,7 +333,7 @@ function createDoor(type){
 				line.appendChild(title);
 				line.setAttributeNS(null,"stroke","red");
 				line.setAttributeNS(null,"id","door");
-				line.setAttribute("class","draggable");
+				//line.setAttribute("class","draggable");
 				document.getElementById("museum").appendChild(line);
 				console.log(museum);
 				museum.removeEventListener("click",_listener,true);
