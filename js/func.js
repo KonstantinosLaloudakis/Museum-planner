@@ -181,8 +181,10 @@ function removeObject(){
 			selectedElement=event.target;
 			if(selectedElement!=document.getElementById("museum")){
 				if(selectedElement.tagName.toLowerCase()=="polyline"){
-						box=true;
-						polyline_flag=false;
+					
+						return;
+						//box=true;
+						//polyline_flag=false;
 				}
 				else if(selectedElement.getAttributeNS(null,"id")=="door"){
 					if(selectedElement.firstChild.textContent=="Entrance/Exit"){
@@ -386,6 +388,9 @@ function save_json(museum_name=null,loaded=false){
 	if(!door_flag_entrance){
 		alert("You must have at least 1 door in order to save the museum(Entrance/Exit Or 1 Entrance And One Exit)");
 		return;
+	}
+	if(!polyline_flag){
+		alert("You haven't created a museum yet. No external walls ")
 	}
 	else{
 		if(!door_flag_exit){

@@ -73,7 +73,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
     <li class="nav-item text-nowrap">
       <a class="nav-link" href="logout.php">
 	  <span data-feather="log-out"></span>
-	  Sign out</a>
+	  Log out</a>
     </li>
   </ul>
 </nav>
