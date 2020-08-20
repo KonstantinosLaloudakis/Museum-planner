@@ -24,7 +24,7 @@ if($count==1){
 
 }
 else{
-	echo "fuck you ";
+	header('Location: '.$login_redir.'');
 	mysqli_close($con);
 	//header('.Location: '.$logout_redirect.'');
 }

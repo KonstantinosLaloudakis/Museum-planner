@@ -40,7 +40,7 @@ $name=$_GET['name'];
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Starter Template · Bootstrap</title>
+    <title>animate museum</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
 
@@ -112,34 +112,41 @@ $name=$_GET['name'];
 </div>
 <div class="container" >
 <form class="form-inline" name="AnimationForm">
+&nbsp;
  <div class="form-group">
 		<label for="numb"> Path: </label>
 		<input id="numb" type="text">
 	</div>
+	&nbsp;
 	 <div class="form-group">
 		<label for="quantity">Quantity (between 1 and 100):</label>
 		<input  type="number" id="quantity" name="quantity" min="1" max="100">
 	</div>
+	&nbsp;
 		<input type="hidden" id="name" name="name" value="<?php echo $name?>">
 	 <div class="form-group">
 		<div class="form-check">
+		&nbsp;
 		<input class="form-check-input" type="radio" name="ColorRadios" id="exampleRadios1" value="1" checked>
 			  <label class="form-check-label" for="exampleRadios1">
 				Οικογένεια 
 			  </label>
 			</div>
+			&nbsp;
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="ColorRadios" id="exampleRadios2" value="2">
 			  <label class="form-check-label" for="exampleRadios2">
 				Σχολείο 
 			  </label>
 			</div>
+			&nbsp;
 			<div class="form-check">
 			  <input class="form-check-input" type="radio" name="ColorRadios" id="exampleRadios3" value="3">
 			  <label class="form-check-label" for="exampleRadios3">
 				Άλλοι επισκέπτες 
 			  </label>		
 			</div>
+			&nbsp;
 		</div>
 		<button type="button" onclick='if(validateForm())storeData()'>Submit</button>
 	</form>

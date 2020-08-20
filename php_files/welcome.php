@@ -33,7 +33,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Dashboard Template · Bootstrap</title>
+    <title>Home page</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
 
@@ -96,9 +96,9 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="AboutUs.php">
-              <span data-feather="info"></span>
-              About Us
+            <a class="nav-link" href="User_manual.php">
+              <span data-feather="help-circle"></span>
+			  Help
             </a>
           </li>
         </ul>

@@ -33,7 +33,7 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.0.1">
-    <title>Dashboard Template · Bootstrap</title>
+    <title>museumplanner Load Saved Museum</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
 
@@ -84,21 +84,21 @@ $result = mysqli_query($con, "SELECT * FROM user_rooms WHERE user_id = \"$id[0]\
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="public.php">
+            <a class="nav-link" href="public.php">
               <span data-feather="plus-square"></span>
               Create your own museum
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="load_museums.php">
+            <a class="nav-link active" href="load_museums.php">
               <span data-feather="loader"></span>
               Load museum<span class="sr-only">(current)</span>
             </a>
           </li>
          <li class="nav-item">
-            <a class="nav-link" href="AboutUs.php">
-              <span data-feather="info"></span>
-              About Us
+            <a class="nav-link" href="User_manual.php">
+              <span data-feather="help-circle"></span>
+              Help
             </a>
           </li>
         </ul>
