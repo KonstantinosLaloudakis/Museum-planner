@@ -12,8 +12,8 @@ All the tables of the database are in 'museumdb.sql' file.
 
 ## Bugs and Issues
 Have a bug or an issue with this project? Send an email at one of the following addresses:
-* pcst19011@uop.gr
-* pcst19008@uop.gr
+* klaloudakis97@gmail.com
+* nskoutroumanis@gmail.com
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
