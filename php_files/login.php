@@ -5,13 +5,6 @@ include "database.php";
 $username = $_POST["username"];
 $password = trim($_POST["pass"]);
 
-//$con = mysqli_connect("localhost","root","");
-
-///f(! $con)
-//{
-////    die('Connection Failed'.mysql_error());
-//}
-
 
 
 $result = mysqli_query($con,"SELECT * FROM users WHERE username = \"$username\" AND password =\"$password\"");
@@ -24,9 +17,8 @@ if($count==1){
 
 }
 else{
-	header('Location: '.$login_redir.'');
 	mysqli_close($con);
-	//header('.Location: '.$logout_redirect.'');
+	header('.Location: '.$logout_redirect.'');
 }
 
 ?>
